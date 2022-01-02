@@ -82,13 +82,16 @@ __global__ void Sgemm(
     const int A_TILE_ROW_STRIDE = THREAD_NUM_PER_BLOCK / A_TILE_THREAD_PER_ROW;
     const int B_TILE_ROW_STRIDE = THREAD_NUM_PER_BLOCK / B_TILE_THREAD_PER_ROW;
 
+    A = &A[(BLOCK_SIZE_M * by)* K];
+    B = &B[BLOCK_SIZE_N * bx];
+
     //transfer first tile from global mem to shared mem
     // load A from global memory to shared memory
     #pragma unroll
     for ( int i = 0 ; i < BLOCK_SIZE_M ; i += A_TILE_ROW_STRIDE) {
         int ldg_index = i / A_TILE_ROW_STRIDE * 4;
         FETCH_FLOAT4(ldg_a_reg[ldg_index]) = FETCH_FLOAT4(A[OFFSET(
-            BLOCK_SIZE_M * by + A_TILE_ROW_START + i, // row
+            A_TILE_ROW_START + i, // row
             A_TILE_COL, // col
             K )]);
         As[0][A_TILE_COL][A_TILE_ROW_START + i]=ldg_a_reg[ldg_index];
@@ -101,7 +104,7 @@ __global__ void Sgemm(
     for ( int i = 0 ; i < BLOCK_SIZE_K; i += B_TILE_ROW_STRIDE) {
         FETCH_FLOAT4(Bs[0][B_TILE_ROW_START + i][B_TILE_COL]) = FETCH_FLOAT4(B[OFFSET(
                 B_TILE_ROW_START + i, // row
-                B_TILE_COL + BLOCK_SIZE_N * bx, // col
+                B_TILE_COL, // col
                 N )]);
     }
     __syncthreads();
@@ -126,7 +129,7 @@ __global__ void Sgemm(
             for ( int i = 0 ; i < BLOCK_SIZE_M ; i += A_TILE_ROW_STRIDE) {
                 int ldg_index = i / A_TILE_ROW_STRIDE * 4;
                 FETCH_FLOAT4(ldg_a_reg[ldg_index]) = FETCH_FLOAT4(A[OFFSET(
-                    BLOCK_SIZE_M * by + A_TILE_ROW_START + i, // row
+                    A_TILE_ROW_START + i, // row
                     A_TILE_COL + tile_idx, // col
                     K )]);
             }
@@ -135,7 +138,7 @@ __global__ void Sgemm(
                 int ldg_index = i / A_TILE_ROW_STRIDE * 4;
                 FETCH_FLOAT4(ldg_b_reg[ldg_index]) = FETCH_FLOAT4(B[OFFSET(
                     tile_idx + B_TILE_ROW_START + i, // row
-                    B_TILE_COL + BLOCK_SIZE_N * bx, // col
+                    B_TILE_COL, // col
                     N )]);
             }
         }
