@@ -5,7 +5,6 @@
 #include <cuda_runtime.h>
 #include <cublas_v2.h>
 #include <math.h> 
-#include "cuHalfComplex.h"
 
 // cal offset from row col and ld , in row-major matrix, ld is the width of the matrix
 #define OFFSET(row, col, ld) ((row) * (ld) + (col))
@@ -88,17 +87,9 @@ int main(int argc, char** argv) {
     checkCudaErrors(cudaMalloc(&d_x, bytes_x));
     checkCudaErrors(cudaMalloc(&d_y, bytes_y));
 
-    /*
-    const int WARP_SIZE=32;
-    const int THREAD_PER_ROW=32;
-    const int ROW_PER_WARP=WARP_SIZE/THREAD_PER_ROW;
-    const int THREAD_PER_BLOCK=128;
-    const int ROW_PER_BLOCK=(THREAD_PER_BLOCK/WARP_SIZE)*ROW_PER_WARP;
-    */
-
     // 生成A的数据
     for( int i = 0; i < M * N; i++ ) {
-        h_A[i] = i/N;
+        h_A[i] = (float)i/N;
     }
 
     // 生成x的数据
