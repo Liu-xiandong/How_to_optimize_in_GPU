@@ -287,7 +287,7 @@ int main(int argc, char** argv) {
     checkCudaErrors(cudaEventCreate(&start));
     checkCudaErrors(cudaEventCreate(&stop));
     float msecTotal = 0;
-    int nIter = 100;
+    int nIter = 1000;
 
     checkCudaErrors(cudaMemcpy( d_C, h_C, bytes_C, cudaMemcpyHostToDevice));
     checkCudaErrors(cudaEventRecord(start));
