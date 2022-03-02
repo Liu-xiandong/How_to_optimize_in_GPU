@@ -6,7 +6,7 @@ Seven optimization methods were used to optimize reduce operator, and the perfor
 ![](https://github.com/writerblack/test/blob/master/reduce8.png?raw=true)
 
 # gemm
-Optimized for Sgemm, it can reach 99.5% of cublas performance on 4096 matrices (M=N=K).
+
 
 ## License
 All the source codes of this repo are released under [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0).
