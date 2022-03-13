@@ -1,0 +1,1388 @@
+// --------------------- FileHeader --------------------------
+	// All file header info is kept as is (unless offset/size attributes)
+	// The original header flags is not complete, thus discarded. 
+	// 	.headerflags	@"EF_CUDA_TEXMODE_UNIFIED EF_CUDA_64BIT_ADDRESS EF_CUDA_SM70 EF_CUDA_VIRTUAL_SM(EF_CUDA_SM70)"
+	// 	.elftype	@"ET_EXEC"
+	// 
+	// 
+	.__elf_ident_osabi      51
+	.__elf_ident_abiversion 7
+	.__elf_type             ET_EXEC
+	.__elf_machine          EM_CUDA
+	.__elf_version          112 		// CUDA toolkit version 
+	.__elf_entry            0 		// entry point address 
+	.__elf_phoff            0x3700 		// program header offset, maybe updated by assembler
+	.__elf_shoff            0x3400 		// section header offset, maybe updated by assembler
+	.__elf_flags            0x460546 		// Flags, SM_70(0x46), COMPUTE_70(0x46) 
+	.__elf_ehsize           64 		// elf header size 
+	.__elf_phentsize        56 		// program entry size
+	.__elf_phnum            3 		// number of program entries
+	.__elf_shentsize        64 		// section entry size
+	.__elf_shnum            12 		// number of sections, currently no sections can be appended/removed
+	.__elf_shstrndx         1 		// Section name string table index 
+
+
+  //-------------------------------------------------
+  //------------ END of FileHeader ------------------
+  //-------------------------------------------------
+
+
+
+// ---------------------                                  --------------------------
+	// there will always be an empty section at index 0
+	.section  "", 0, SHT_NULL
+	.__section_name         0x0 	// offset in .shstrtab
+	.__section_type         SHT_NULL
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x0 	// maybe updated by assembler
+	.__section_size         0x0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                0 	// equivalent to set sh_addralign
+
+// --------------------- .shstrtab                        --------------------------
+	.section  ".shstrtab", 0, SHT_STRTAB
+	// all strings in .shstrtab section will be kept as is.
+	.__section_name         0x1 	// offset in .shstrtab
+	.__section_type         SHT_STRTAB
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x40 	// maybe updated by assembler
+	.__section_size         0x153 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                1 	// equivalent to set sh_addralign
+    // .shstrtab[0] = b'\x00' 
+    /*0000*/ .byte 0x00
+
+    // .shstrtab[1] = b'.shstrtab\x00' 
+    /*0001*/ .byte 0x2e, 0x73, 0x68, 0x73, 0x74, 0x72, 0x74, 0x61
+    /*0009*/ .byte 0x62, 0x00
+
+    // .shstrtab[2] = b'.strtab\x00' 
+    /*000b*/ .byte 0x2e, 0x73, 0x74, 0x72, 0x74, 0x61, 0x62, 0x00
+
+    // .shstrtab[3] = b'.symtab\x00' 
+    /*0013*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x00
+
+    // .shstrtab[4] = b'.symtab_shndx\x00' 
+    /*001b*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x5f
+    /*0023*/ .byte 0x73, 0x68, 0x6e, 0x64, 0x78, 0x00
+
+    // .shstrtab[5] = b'.nv.info\x00' 
+    /*0029*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0031*/ .byte 0x00
+
+    // .shstrtab[6] = b'.text._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii\x00' 
+    /*0032*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*003a*/ .byte 0x35, 0x53, 0x67, 0x65, 0x6d, 0x6d, 0x49, 0x4c
+    /*0042*/ .byte 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38
+    /*004a*/ .byte 0x45, 0x4c, 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c
+    /*0052*/ .byte 0x69, 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c
+    /*005a*/ .byte 0x62, 0x30, 0x45, 0x45, 0x76, 0x50, 0x66, 0x53
+    /*0062*/ .byte 0x30, 0x5f, 0x53, 0x30, 0x5f, 0x69, 0x69, 0x69
+    /*006a*/ .byte 0x00
+
+    // .shstrtab[7] = b'.nv.info._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii\x00' 
+    /*006b*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0073*/ .byte 0x2e, 0x5f, 0x5a, 0x35, 0x53, 0x67, 0x65, 0x6d
+    /*007b*/ .byte 0x6d, 0x49, 0x4c, 0x69, 0x31, 0x32, 0x38, 0x45
+    /*0083*/ .byte 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x69, 0x31, 0x32
+    /*008b*/ .byte 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x69
+    /*0093*/ .byte 0x38, 0x45, 0x4c, 0x62, 0x30, 0x45, 0x45, 0x76
+    /*009b*/ .byte 0x50, 0x66, 0x53, 0x30, 0x5f, 0x53, 0x30, 0x5f
+    /*00a3*/ .byte 0x69, 0x69, 0x69, 0x00
+
+    // .shstrtab[8] = b'.nv.shared._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii\x00' 
+    /*00a7*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*00af*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x35, 0x53, 0x67
+    /*00b7*/ .byte 0x65, 0x6d, 0x6d, 0x49, 0x4c, 0x69, 0x31, 0x32
+    /*00bf*/ .byte 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x69
+    /*00c7*/ .byte 0x31, 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45
+    /*00cf*/ .byte 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x62, 0x30, 0x45
+    /*00d7*/ .byte 0x45, 0x76, 0x50, 0x66, 0x53, 0x30, 0x5f, 0x53
+    /*00df*/ .byte 0x30, 0x5f, 0x69, 0x69, 0x69, 0x00
+
+    // .shstrtab[9] = b'.nv.constant0._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii\x00' 
+    /*00e5*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*00ed*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*00f5*/ .byte 0x35, 0x53, 0x67, 0x65, 0x6d, 0x6d, 0x49, 0x4c
+    /*00fd*/ .byte 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38
+    /*0105*/ .byte 0x45, 0x4c, 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c
+    /*010d*/ .byte 0x69, 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c
+    /*0115*/ .byte 0x62, 0x30, 0x45, 0x45, 0x76, 0x50, 0x66, 0x53
+    /*011d*/ .byte 0x30, 0x5f, 0x53, 0x30, 0x5f, 0x69, 0x69, 0x69
+    /*0125*/ .byte 0x00
+
+    // .shstrtab[10] = b'.debug_frame\x00' 
+    /*0126*/ .byte 0x2e, 0x64, 0x65, 0x62, 0x75, 0x67, 0x5f, 0x66
+    /*012e*/ .byte 0x72, 0x61, 0x6d, 0x65, 0x00
+
+    // .shstrtab[11] = b'.rel.debug_frame\x00' 
+    /*0133*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x64, 0x65, 0x62
+    /*013b*/ .byte 0x75, 0x67, 0x5f, 0x66, 0x72, 0x61, 0x6d, 0x65
+    /*0143*/ .byte 0x00
+
+    // .shstrtab[12] = b'.nv.rel.action\x00' 
+    /*0144*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x72, 0x65, 0x6c, 0x2e
+    /*014c*/ .byte 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x00
+
+
+// --------------------- .strtab                          --------------------------
+	.section  ".strtab", 0, SHT_STRTAB
+	// all strings in .strtab section will be kept as is.
+	.__section_name         0xb 	// offset in .shstrtab
+	.__section_type         SHT_STRTAB
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x193 	// maybe updated by assembler
+	.__section_size         0x20b 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                1 	// equivalent to set sh_addralign
+    // .strtab[0] = b'\x00' 
+    /*0000*/ .byte 0x00
+
+    // .strtab[1] = b'.shstrtab\x00' 
+    /*0001*/ .byte 0x2e, 0x73, 0x68, 0x73, 0x74, 0x72, 0x74, 0x61
+    /*0009*/ .byte 0x62, 0x00
+
+    // .strtab[2] = b'.strtab\x00' 
+    /*000b*/ .byte 0x2e, 0x73, 0x74, 0x72, 0x74, 0x61, 0x62, 0x00
+
+    // .strtab[3] = b'.symtab\x00' 
+    /*0013*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x00
+
+    // .strtab[4] = b'.symtab_shndx\x00' 
+    /*001b*/ .byte 0x2e, 0x73, 0x79, 0x6d, 0x74, 0x61, 0x62, 0x5f
+    /*0023*/ .byte 0x73, 0x68, 0x6e, 0x64, 0x78, 0x00
+
+    // .strtab[5] = b'.nv.info\x00' 
+    /*0029*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*0031*/ .byte 0x00
+
+    // .strtab[6] = b'_Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii\x00' 
+    /*0032*/ .byte 0x5f, 0x5a, 0x35, 0x53, 0x67, 0x65, 0x6d, 0x6d
+    /*003a*/ .byte 0x49, 0x4c, 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c
+    /*0042*/ .byte 0x69, 0x38, 0x45, 0x4c, 0x69, 0x31, 0x32, 0x38
+    /*004a*/ .byte 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x69, 0x38
+    /*0052*/ .byte 0x45, 0x4c, 0x62, 0x30, 0x45, 0x45, 0x76, 0x50
+    /*005a*/ .byte 0x66, 0x53, 0x30, 0x5f, 0x53, 0x30, 0x5f, 0x69
+    /*0062*/ .byte 0x69, 0x69, 0x00
+
+    // .strtab[7] = b'.text._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii\x00' 
+    /*0065*/ .byte 0x2e, 0x74, 0x65, 0x78, 0x74, 0x2e, 0x5f, 0x5a
+    /*006d*/ .byte 0x35, 0x53, 0x67, 0x65, 0x6d, 0x6d, 0x49, 0x4c
+    /*0075*/ .byte 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38
+    /*007d*/ .byte 0x45, 0x4c, 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c
+    /*0085*/ .byte 0x69, 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c
+    /*008d*/ .byte 0x62, 0x30, 0x45, 0x45, 0x76, 0x50, 0x66, 0x53
+    /*0095*/ .byte 0x30, 0x5f, 0x53, 0x30, 0x5f, 0x69, 0x69, 0x69
+    /*009d*/ .byte 0x00
+
+    // .strtab[8] = b'.nv.info._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii\x00' 
+    /*009e*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x69, 0x6e, 0x66, 0x6f
+    /*00a6*/ .byte 0x2e, 0x5f, 0x5a, 0x35, 0x53, 0x67, 0x65, 0x6d
+    /*00ae*/ .byte 0x6d, 0x49, 0x4c, 0x69, 0x31, 0x32, 0x38, 0x45
+    /*00b6*/ .byte 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x69, 0x31, 0x32
+    /*00be*/ .byte 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x69
+    /*00c6*/ .byte 0x38, 0x45, 0x4c, 0x62, 0x30, 0x45, 0x45, 0x76
+    /*00ce*/ .byte 0x50, 0x66, 0x53, 0x30, 0x5f, 0x53, 0x30, 0x5f
+    /*00d6*/ .byte 0x69, 0x69, 0x69, 0x00
+
+    // .strtab[9] = b'.nv.shared._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii\x00' 
+    /*00da*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x73, 0x68, 0x61, 0x72
+    /*00e2*/ .byte 0x65, 0x64, 0x2e, 0x5f, 0x5a, 0x35, 0x53, 0x67
+    /*00ea*/ .byte 0x65, 0x6d, 0x6d, 0x49, 0x4c, 0x69, 0x31, 0x32
+    /*00f2*/ .byte 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x69
+    /*00fa*/ .byte 0x31, 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45
+    /*0102*/ .byte 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x62, 0x30, 0x45
+    /*010a*/ .byte 0x45, 0x76, 0x50, 0x66, 0x53, 0x30, 0x5f, 0x53
+    /*0112*/ .byte 0x30, 0x5f, 0x69, 0x69, 0x69, 0x00
+
+    // .strtab[10] = b'$___ZZ5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iiiE2As__31\x00' 
+    /*0118*/ .byte 0x24, 0x5f, 0x5f, 0x5f, 0x5a, 0x5a, 0x35, 0x53
+    /*0120*/ .byte 0x67, 0x65, 0x6d, 0x6d, 0x49, 0x4c, 0x69, 0x31
+    /*0128*/ .byte 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c
+    /*0130*/ .byte 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38
+    /*0138*/ .byte 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x62, 0x30
+    /*0140*/ .byte 0x45, 0x45, 0x76, 0x50, 0x66, 0x53, 0x30, 0x5f
+    /*0148*/ .byte 0x53, 0x30, 0x5f, 0x69, 0x69, 0x69, 0x45, 0x32
+    /*0150*/ .byte 0x41, 0x73, 0x5f, 0x5f, 0x33, 0x31, 0x00
+
+    // .strtab[11] = b'$___ZZ5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iiiE2Bs__33\x00' 
+    /*0157*/ .byte 0x24, 0x5f, 0x5f, 0x5f, 0x5a, 0x5a, 0x35, 0x53
+    /*015f*/ .byte 0x67, 0x65, 0x6d, 0x6d, 0x49, 0x4c, 0x69, 0x31
+    /*0167*/ .byte 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c
+    /*016f*/ .byte 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38
+    /*0177*/ .byte 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c, 0x62, 0x30
+    /*017f*/ .byte 0x45, 0x45, 0x76, 0x50, 0x66, 0x53, 0x30, 0x5f
+    /*0187*/ .byte 0x53, 0x30, 0x5f, 0x69, 0x69, 0x69, 0x45, 0x32
+    /*018f*/ .byte 0x42, 0x73, 0x5f, 0x5f, 0x33, 0x33, 0x00
+
+    // .strtab[12] = b'.nv.constant0._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii\x00' 
+    /*0196*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x63, 0x6f, 0x6e, 0x73
+    /*019e*/ .byte 0x74, 0x61, 0x6e, 0x74, 0x30, 0x2e, 0x5f, 0x5a
+    /*01a6*/ .byte 0x35, 0x53, 0x67, 0x65, 0x6d, 0x6d, 0x49, 0x4c
+    /*01ae*/ .byte 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c, 0x69, 0x38
+    /*01b6*/ .byte 0x45, 0x4c, 0x69, 0x31, 0x32, 0x38, 0x45, 0x4c
+    /*01be*/ .byte 0x69, 0x38, 0x45, 0x4c, 0x69, 0x38, 0x45, 0x4c
+    /*01c6*/ .byte 0x62, 0x30, 0x45, 0x45, 0x76, 0x50, 0x66, 0x53
+    /*01ce*/ .byte 0x30, 0x5f, 0x53, 0x30, 0x5f, 0x69, 0x69, 0x69
+    /*01d6*/ .byte 0x00
+
+    // .strtab[13] = b'_param\x00' 
+    /*01d7*/ .byte 0x5f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x00
+
+    // .strtab[14] = b'.debug_frame\x00' 
+    /*01de*/ .byte 0x2e, 0x64, 0x65, 0x62, 0x75, 0x67, 0x5f, 0x66
+    /*01e6*/ .byte 0x72, 0x61, 0x6d, 0x65, 0x00
+
+    // .strtab[15] = b'.rel.debug_frame\x00' 
+    /*01eb*/ .byte 0x2e, 0x72, 0x65, 0x6c, 0x2e, 0x64, 0x65, 0x62
+    /*01f3*/ .byte 0x75, 0x67, 0x5f, 0x66, 0x72, 0x61, 0x6d, 0x65
+    /*01fb*/ .byte 0x00
+
+    // .strtab[16] = b'.nv.rel.action\x00' 
+    /*01fc*/ .byte 0x2e, 0x6e, 0x76, 0x2e, 0x72, 0x65, 0x6c, 0x2e
+    /*0204*/ .byte 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x00
+
+
+// --------------------- .symtab                          --------------------------
+	.section  ".symtab", 0, SHT_SYMTAB
+	// all symbols in .symtab sections will be kept
+	// but the symbol size may be changed accordingly
+	.__section_name         0x13 	// offset in .shstrtab
+	.__section_type         SHT_SYMTAB
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x3a0 	// maybe updated by assembler
+	.__section_size         0xa8 	// maybe updated by assembler
+	.__section_link         2
+	.__section_info         0x5
+	.__section_entsize      24
+	.align                8 	// equivalent to set sh_addralign
+    // Symbol[0] "": Container({'st_name': 0, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_NOTYPE'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 'SHN_UNDEF', 'st_value': 0, 'st_size': 0})
+    /*0000*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0008*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0010*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[1] ".text._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii": Container({'st_name': 101, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 10, 'st_value': 0, 'st_size': 0})
+    /*0018*/ .byte 0x65, 0x00, 0x00, 0x00, 0x03, 0x00, 0x0a, 0x00
+    /*0020*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0028*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[2] ".nv.shared._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii": Container({'st_name': 218, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 11, 'st_value': 0, 'st_size': 0})
+    /*0030*/ .byte 0xda, 0x00, 0x00, 0x00, 0x03, 0x00, 0x0b, 0x00
+    /*0038*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0040*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[3] ".nv.constant0._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii": Container({'st_name': 406, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 9, 'st_value': 0, 'st_size': 0})
+    /*0048*/ .byte 0x96, 0x01, 0x00, 0x00, 0x03, 0x00, 0x09, 0x00
+    /*0050*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0058*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[4] ".debug_frame": Container({'st_name': 478, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 4, 'st_value': 0, 'st_size': 0})
+    /*0060*/ .byte 0xde, 0x01, 0x00, 0x00, 0x03, 0x00, 0x04, 0x00
+    /*0068*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0070*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[5] ".nv.rel.action": Container({'st_name': 508, 'st_info': Container({'bind': 'STB_LOCAL', 'type': 'STT_SECTION'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 7, 'st_value': 0, 'st_size': 0})
+    /*0078*/ .byte 0xfc, 0x01, 0x00, 0x00, 0x03, 0x00, 0x07, 0x00
+    /*0080*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*0088*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+    // Symbol[6] "_Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii": Container({'st_name': 50, 'st_info': Container({'bind': 'STB_GLOBAL', 'type': 'STT_FUNC'}), 'st_other': Container({'visibility': 'STV_DEFAULT'}), 'st_shndx': 10, 'st_value': 0, 'st_size': 11264})
+    /*0090*/ .byte 0x32, 0x00, 0x00, 0x00, 0x12, 0x10, 0x0a, 0x00
+    /*0098*/ .byte 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    /*00a0*/ .byte 0x00, 0x2c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+
+
+// --------------------- .debug_frame                     --------------------------
+	.section	.debug_frame,"",@progbits
+	.__section_name         0x126 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x448 	// maybe updated by assembler
+	.__section_size         0x70 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                1 	// equivalent to set sh_addralign
+  .debug_frame:
+          /*0000*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff
+          /*0010*/ 	.byte	0xff, 0xff, 0xff, 0xff, 0x03, 0x00, 0x04, 0x7c, 0xff, 0xff, 0xff, 0xff, 0x0f, 0x0c, 0x81, 0x80
+          /*0020*/ 	.byte	0x80, 0x28, 0x00, 0x08, 0xff, 0x81, 0x80, 0x28, 0x08, 0x81, 0x80, 0x80, 0x28, 0x00, 0x00, 0x00
+          /*0030*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0040*/ 	.byte	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+          /*0048*/ 	.dword	_Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii
+          /*0050*/ 	.byte	0xf0, 0x2b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x00, 0x00, 0x00, 0x04, 0x44, 0x01
+          /*0060*/ 	.byte	0x00, 0x00, 0x0c, 0x81, 0x80, 0x80, 0x28, 0x00, 0x04, 0xa8, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00
+  
+  
+// --------------------- .nv.info                         --------------------------
+	.section	.nv.info,"",@"SHT_CUDA_INFO"
+	.__section_name         0x29 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x4b8 	// maybe updated by assembler
+	.__section_size         0x30 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x0
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_REGCOUNT
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x2f
+          /*0002*/ 	.short	(.L_5 - .L_4)
+  	.align		4
+  .L_4:
+          /*0004*/ 	.word	index@(_Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii)
+          /*0008*/ 	.word	0x00000081
+  
+  
+  	//----- nvinfo : EIATTR_MAX_STACK_SIZE
+  	.align		4
+  .L_5:
+          /*000c*/ 	.byte	0x04, 0x23
+          /*000e*/ 	.short	(.L_7 - .L_6)
+  	.align		4
+  .L_6:
+          /*0010*/ 	.word	index@(_Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii)
+          /*0014*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_MIN_STACK_SIZE
+  	.align		4
+  .L_7:
+          /*0018*/ 	.byte	0x04, 0x12
+          /*001a*/ 	.short	(.L_9 - .L_8)
+  	.align		4
+  .L_8:
+          /*001c*/ 	.word	index@(_Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii)
+          /*0020*/ 	.word	0x00000000
+  
+  
+  	//----- nvinfo : EIATTR_FRAME_SIZE
+  	.align		4
+  .L_9:
+          /*0024*/ 	.byte	0x04, 0x11
+          /*0026*/ 	.short	(.L_11 - .L_10)
+  	.align		4
+  .L_10:
+          /*0028*/ 	.word	index@(_Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii)
+          /*002c*/ 	.word	0x00000000
+  .L_11:
+  
+  
+// --------------------- .nv.info._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii --------------------------
+	.section	.nv.info._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii,"",@"SHT_CUDA_INFO"
+	.__section_name         0x6b 	// offset in .shstrtab
+	.__section_type         1879048192
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x4e8 	// maybe updated by assembler
+	.__section_size         0x94 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0xa
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  
+  
+  	//----- nvinfo : EIATTR_SW_WAR
+  	.align		4
+          /*0000*/ 	.byte	0x04, 0x36
+          /*0002*/ 	.short	(.L_13 - .L_12)
+  .L_12:
+          /*0004*/ 	.word	0x00000001
+  
+  
+  	//----- nvinfo : EIATTR_CUDA_API_VERSION
+  	.align		4
+  .L_13:
+          /*0008*/ 	.byte	0x04, 0x37
+          /*000a*/ 	.short	(.L_15 - .L_14)
+  .L_14:
+          /*000c*/ 	.word	0x00000070
+  
+  
+  	//----- nvinfo : EIATTR_PARAM_CBANK
+  	.align		4
+  .L_15:
+          /*0010*/ 	.byte	0x04, 0x0a
+          /*0012*/ 	.short	(.L_17 - .L_16)
+  	.align		4
+  .L_16:
+          /*0014*/ 	.word	index@(.nv.constant0._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii)
+          /*0018*/ 	.short	0x0160
+          /*001a*/ 	.short	0x0024
+  
+  
+  	//----- nvinfo : EIATTR_CBANK_PARAM_SIZE
+  	.align		4
+  .L_17:
+          /*001c*/ 	.byte	0x03, 0x19
+          /*001e*/ 	.short	0x0024
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+          /*0020*/ 	.byte	0x04, 0x17
+          /*0022*/ 	.short	(.L_19 - .L_18)
+  .L_18:
+          /*0024*/ 	.word	0x00000000
+          /*0028*/ 	.short	0x0005
+          /*002a*/ 	.short	0x0020
+          /*002c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_19:
+          /*0030*/ 	.byte	0x04, 0x17
+          /*0032*/ 	.short	(.L_21 - .L_20)
+  .L_20:
+          /*0034*/ 	.word	0x00000000
+          /*0038*/ 	.short	0x0004
+          /*003a*/ 	.short	0x001c
+          /*003c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_21:
+          /*0040*/ 	.byte	0x04, 0x17
+          /*0042*/ 	.short	(.L_23 - .L_22)
+  .L_22:
+          /*0044*/ 	.word	0x00000000
+          /*0048*/ 	.short	0x0003
+          /*004a*/ 	.short	0x0018
+          /*004c*/ 	.byte	0x00, 0xf0, 0x11, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_23:
+          /*0050*/ 	.byte	0x04, 0x17
+          /*0052*/ 	.short	(.L_25 - .L_24)
+  .L_24:
+          /*0054*/ 	.word	0x00000000
+          /*0058*/ 	.short	0x0002
+          /*005a*/ 	.short	0x0010
+          /*005c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_25:
+          /*0060*/ 	.byte	0x04, 0x17
+          /*0062*/ 	.short	(.L_27 - .L_26)
+  .L_26:
+          /*0064*/ 	.word	0x00000000
+          /*0068*/ 	.short	0x0001
+          /*006a*/ 	.short	0x0008
+          /*006c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_KPARAM_INFO
+  	.align		4
+  .L_27:
+          /*0070*/ 	.byte	0x04, 0x17
+          /*0072*/ 	.short	(.L_29 - .L_28)
+  .L_28:
+          /*0074*/ 	.word	0x00000000
+          /*0078*/ 	.short	0x0000
+          /*007a*/ 	.short	0x0000
+          /*007c*/ 	.byte	0x00, 0xf0, 0x21, 0x00
+  
+  
+  	//----- nvinfo : EIATTR_MAXREG_COUNT
+  	.align		4
+  .L_29:
+          /*0080*/ 	.byte	0x03, 0x1b
+          /*0082*/ 	.short	0x00ff
+  
+  
+  	//----- nvinfo : EIATTR_INT_WARP_WIDE_INSTR_OFFSETS
+  	.align		4
+          /*0084*/ 	.byte	0x04, 0x31
+          /*0086*/ 	.short	(.L_31 - .L_30)
+  
+  
+  	//   ....[0]....
+  .L_30:
+          /*0088*/ 	.word	0x00000010
+  
+  
+  	//----- nvinfo : EIATTR_EXIT_INSTR_OFFSETS
+  	.align		4
+  .L_31:
+          /*008c*/ 	.byte	0x04, 0x1c
+          /*008e*/ 	.short	(.L_33 - .L_32)
+  
+  
+  	//   ....[0]....
+  .L_32:
+          /*0090*/ 	.word	0x00002bb0
+  .L_33:
+  
+  
+// --------------------- .nv.rel.action                   --------------------------
+	.section	.nv.rel.action,"",@"SHT_CUDA_RELOCINFO"
+	.__section_name         0x144 	// offset in .shstrtab
+	.__section_type         1879048203
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x580 	// maybe updated by assembler
+	.__section_size         0xd0 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0x0
+	.__section_entsize      8
+	.align                8 	// equivalent to set sh_addralign
+  	.align	8
+  	.sectionentsize	8
+          /*0000*/ 	.byte	0x4b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x02, 0x08, 0x10, 0x0a, 0x2f, 0x22
+          /*0010*/ 	.byte	0x00, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0020*/ 	.byte	0x00, 0x00, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0030*/ 	.byte	0x00, 0x00, 0x20, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x28, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0040*/ 	.byte	0x00, 0x00, 0x30, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x38, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0050*/ 	.byte	0x01, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0060*/ 	.byte	0x01, 0x00, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0070*/ 	.byte	0x01, 0x00, 0x20, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x28, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0080*/ 	.byte	0x01, 0x00, 0x30, 0x08, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x38, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*0090*/ 	.byte	0x02, 0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x08, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*00a0*/ 	.byte	0x02, 0x00, 0x10, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x18, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*00b0*/ 	.byte	0x02, 0x00, 0x20, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x28, 0x08, 0x00, 0x00, 0x00, 0x00
+          /*00c0*/ 	.byte	0x02, 0x00, 0x30, 0x08, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x38, 0x08, 0x00, 0x00, 0x00, 0x00
+  
+  
+// --------------------- .rel.debug_frame                 --------------------------
+	.section  ".rel.debug_frame", 0, SHT_REL
+	// all relocation sections will be dynamically generated by assembler 
+	// but most of the section header will be kept as is.
+	.__section_name         0x133 	// offset in .shstrtab
+	.__section_type         SHT_REL
+	.__section_flags        0x0
+	.__section_addr         0x0
+	.__section_offset       0x650 	// maybe updated by assembler
+	.__section_size         0x10 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x4
+	.__section_entsize      16
+	.align                8 	// equivalent to set sh_addralign
+    // Relocation[0] : _Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii, Container({'r_offset': 72, 'r_info': 25769803778, 'r_info_sym': 6, 'r_info_type': 2})
+
+// --------------------- .nv.constant0._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii --------------------------
+	.section	.nv.constant0._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii,"a",@progbits
+	.__section_name         0xe5 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x2
+	.__section_addr         0x0
+	.__section_offset       0x660 	// maybe updated by assembler
+	.__section_size         0x184 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0xa
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.constant0._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii:
+  	.zero		388
+  
+  
+// --------------------- .text._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii --------------------------
+	.section	.text._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii,"ax",@progbits
+	.__section_name         0x32 	// offset in .shstrtab
+	.__section_type         SHT_PROGBITS
+	.__section_flags        0x100006
+	.__section_addr         0x0
+	.__section_offset       0x800 	// maybe updated by assembler
+	.__section_size         0x2c00 	// maybe updated by assembler
+	.__section_link         3
+	.__section_info         0x81000006
+	.__section_entsize      0
+	.align                128 	// equivalent to set sh_addralign
+  	.sectionflags	@"SHF_BARRIERS=1"
+  	.sectioninfo	@"SHI_REGISTERS=129"
+  	.align	128
+          .global         _Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii
+          .type           _Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii,@function
+          .size           _Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii,(.L_34 - _Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii)
+          .other          _Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii,@"STO_CUDA_ENTRY STV_DEFAULT"
+  _Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii:
+  .text._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii:
+      [----:B------:R-:W-:Y:S02]         /*0000*/                   MOV R1, c[0x0][0x28] ;
+  .CUASM_OFFSET_LABEL._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii.EIATTR_INT_WARP_WIDE_INSTR_OFFSETS.#:
+      [----:B------:R-:W-:-:S01]         /*0010*/              @!PT SHFL.IDX PT, RZ, RZ, RZ, RZ ;
+      [----:B------:R-:W0:-:S01]         /*0020*/                   S2R R4, SR_TID.Y ;
+      [----:B------:R-:W-:Y:S03]         /*0030*/                   MOV R119, 0x4 ;
+      [----:B------:R-:W0:-:S04]         /*0040*/                   S2R R45, SR_TID.X ;
+      [----:B------:R-:W1:-:S04]         /*0050*/                   S2R R2, SR_CTAID.Y ;
+      [----:B------:R-:W2:-:S01]         /*0060*/                   S2R R118, SR_CTAID.X ;
+      [----:B0-----:R-:W-:Y:S04]         /*0070*/                   LEA R102, R4, R45, 0x4 ;
+      [----:B------:R-:W-:-:S01]         /*0080*/                   SHF.R.S32.HI R3, RZ, 0x1f, R102 ;
+      [----:B-1----:R-:W-:-:S01]         /*0090*/                   IMAD R2, R2, c[0x0][0x180], RZ ;
+      [-R--:B------:R-:W-:-:S02]         /*00a0*/                   LEA.HI R0, R102, R102.reuse, RZ, 0x1 ;
+      [----:B------:R-:W-:-:S02]         /*00b0*/                   LEA.HI R3, R3, R102, RZ, 0x5 ;
+      [----:B------:R-:W-:-:S02]         /*00c0*/                   LOP3.LUT R103, R0, 0xfffffffe, RZ, 0xc0, !PT ;
+      [----:B------:R-:W-:-:S02]         /*00d0*/                   LOP3.LUT R5, R3, 0xffffffe0, RZ, 0xc0, !PT ;
+      [----:B------:R-:W-:Y:S02]         /*00e0*/                   SHF.L.U32 R2, R2, 0x7, RZ ;
+      [R---:B------:R-:W-:-:S02]         /*00f0*/                   IADD3 R103, R102.reuse, -R103, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0100*/                   IADD3 R102, R102, -R5, RZ ;
+      [-R--:B------:R-:W-:-:S01]         /*0110*/                   IMAD.WIDE R104, R2, R119.reuse, c[0x0][0x160] ;
+      [----:B------:R-:W-:-:S02]         /*0120*/                   SHF.R.S32.HI R0, RZ, 0x1, R0 ;
+      [----:B------:R-:W-:-:S02]         /*0130*/                   SHF.L.U32 R5, R103, 0x2, RZ ;
+      [----:B--2---:R-:W-:-:S02]         /*0140*/                   SHF.L.U32 R118, R118, 0x7, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0150*/                   SHF.R.S32.HI R101, RZ, 0x5, R3 ;
+      [----:B------:R-:W-:-:S01]         /*0160*/                   IMAD R5, R0, c[0x0][0x180], R5 ;
+      [----:B------:R-:W-:-:S01]         /*0170*/                   SHF.L.U32 R100, R102, 0x2, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*0180*/                   IMAD.WIDE R118, R118, R119, c[0x0][0x168] ;
+      [----:B------:R-:W-:Y:S04]         /*0190*/                   IMAD.WIDE R104, R5, 0x4, R104 ;
+      [----:B------:R-:W-:Y:S04]         /*01a0*/                   IMAD R3, R101, c[0x0][0x17c], R100 ;
+      [----:B------:R-:W-:-:S01]         /*01b0*/                   IMAD.WIDE R2, R3, 0x4, R118 ;
+      [----:B------:R-:W2:-:S07]         /*01c0*/                   LDG.E.128.CONSTANT.SYS R8, [R104] ;
+      [----:B------:R0:W3:-:S01]         /*01d0*/                   LDG.E.128.CONSTANT.SYS R24, [R2] ;
+      [----:B------:R-:W-:-:S01]         /*01e0*/                   SHF.L.U32 R7, R0, 0x2, RZ ;
+      [----:B------:R-:W-:-:S01]         /*01f0*/                   CS2R R14, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0200*/                   SHF.L.U32 R6, R101, 0x9, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0210*/                   CS2R R12, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0220*/                   LEA R0, R103, R7, 0xb ;
+      [----:B------:R-:W-:-:S01]         /*0230*/                   CS2R R18, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0240*/                   LEA R20, R102, R6, 0x4 ;
+      [----:B------:R-:W-:-:S01]         /*0250*/                   CS2R R16, SRZ ;
+      [----:B0-----:R-:W-:-:S01]         /*0260*/                   SHF.L.U32 R2, R45, 0x5, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0270*/                   CS2R R22, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0280*/                   MOV R93, RZ ;
+      [----:B------:R-:W-:-:S01]         /*0290*/                   CS2R R30, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*02a0*/                   MOV R5, 0x1 ;
+      [----:B------:R-:W-:-:S01]         /*02b0*/                   CS2R R28, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*02c0*/                   CS2R R34, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*02d0*/                   CS2R R32, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*02e0*/                   CS2R R38, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*02f0*/                   CS2R R36, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0300*/                   CS2R R42, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0310*/                   CS2R R40, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0320*/                   CS2R R62, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0330*/                   CS2R R60, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0340*/                   CS2R R66, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0350*/                   CS2R R64, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0360*/                   CS2R R70, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0370*/                   CS2R R68, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0380*/                   CS2R R74, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0390*/                   CS2R R72, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*03a0*/                   CS2R R76, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*03b0*/                   CS2R R78, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*03c0*/                   CS2R R80, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*03d0*/                   CS2R R82, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*03e0*/                   CS2R R84, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*03f0*/                   CS2R R86, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0400*/                   CS2R R96, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*0410*/                   CS2R R98, SRZ ;
+      [----:B--2---:R-:W-:-:S04]         /*0420*/                   STS [R0], R8 ;
+      [----:B------:R-:W-:-:S04]         /*0430*/                   STS [R0+0x200], R9 ;
+      [----:B------:R-:W-:-:S04]         /*0440*/                   STS [R0+0x400], R10 ;
+      [----:B------:R-:W-:-:S04]         /*0450*/                   STS [R0+0x600], R11 ;
+      [----:B---3--:R-:W-:-:S04]         /*0460*/                   STS.128 [R20+0x2000], R24 ;
+      [----:B------:R-:W-:-:S01]         /*0470*/                   NOP ;
+      [----:B------:R-:W-:-:S05]         /*0480*/                   BAR.SYNC 0x0 ;
+      [----:B------:R-:W-:-:S01]         /*0490*/                   SHF.L.U32 R0, R4, 0x5, RZ ;
+      [----:B------:R0:W1:-:S04]         /*04a0*/                   LDS.U.128 R52, [R2+0x2000] ;
+      [----:B------:R0:W2:-:S01]         /*04b0*/                   LDS.U.128 R56, [R2+0x2010] ;
+      [----:B------:R-:W-:-:S01]         /*04c0*/                   CS2R R20, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*04d0*/                   CS2R R26, SRZ ;
+      [----:B------:R-:W-:-:S01]         /*04e0*/                   CS2R R24, SRZ ;
+      [----:B------:R0:W3:-:S04]         /*04f0*/                   LDS.U.128 R44, [R0] ;
+      [----:B------:R0:W4:-:S03]         /*0500*/                   LDS.U.128 R48, [R0+0x10] ;
+  .L_2:
+      [----:B0-----:R-:W0:-:S02]         /*0510*/                   S2R R4, SR_TID.Y ;
+      [----:B0-----:R-:W-:-:S01]         /*0520*/                   SHF.L.U32 R2, R5, 0xc, RZ ;
+      [R---:B-1-3--:R-:W-:-:S01]         /*0530*/                   FFMA R95, R52.reuse, R46, R40 ;
+      [----:B------:R-:W0:-:S01]         /*0540*/                   S2R R3, SR_TID.X ;
+      [----:B------:R-:W-:Y:S02]         /*0550*/                   FFMA R125, R52, R44, R72 ;
+      [-R--:B------:R-:W-:-:S02]         /*0560*/                   FFMA R122, R53, R44.reuse, R73 ;
+      [-R--:B------:R-:W-:-:S02]         /*0570*/                   FFMA R74, R54, R44.reuse, R74 ;
+      [-R--:B------:R-:W-:-:S02]         /*0580*/                   FFMA R75, R55, R44.reuse, R75 ;
+      [-R--:B--2---:R-:W-:-:S02]         /*0590*/                   FFMA R68, R56, R44.reuse, R68 ;
+      [-R--:B------:R-:W-:-:S02]         /*05a0*/                   FFMA R69, R57, R44.reuse, R69 ;
+      [----:B------:R-:W-:Y:S02]         /*05b0*/                   FFMA R70, R58, R44, R70 ;
+      [----:B------:R-:W-:-:S02]         /*05c0*/                   FFMA R71, R59, R44, R71 ;
+      [-R--:B------:R-:W-:-:S02]         /*05d0*/                   FFMA R124, R52, R45.reuse, R64 ;
+      [-R--:B------:R-:W-:-:S01]         /*05e0*/                   FFMA R121, R53, R45.reuse, R65 ;
+      [-R--:B------:R-:W-:-:S01]         /*05f0*/                   LEA R92, R4, R2.reuse, 0x5 ;
+      [-R--:B------:R-:W-:-:S02]         /*0600*/                   FFMA R44, R54, R45.reuse, R66 ;
+      [-R--:B------:R-:W-:-:S01]         /*0610*/                   FFMA R67, R55, R45.reuse, R67 ;
+      [----:B0-----:R-:W-:-:S01]         /*0620*/                   LEA R40, R3, R2, 0x5 ;
+      [----:B------:R-:W-:Y:S02]         /*0630*/                   FFMA R65, R56, R45, R60 ;
+      [-R--:B------:R-:W-:-:S02]         /*0640*/                   FFMA R64, R57, R45.reuse, R61 ;
+      [-R--:B------:R-:W-:-:S02]         /*0650*/                   FFMA R0, R58, R45.reuse, R62 ;
+      [----:B------:R-:W-:-:S02]         /*0660*/                   FFMA R66, R59, R45, R63 ;
+      [-R--:B------:R-:W-:-:S01]         /*0670*/                   FFMA R120, R53, R46.reuse, R41 ;
+      [----:B------:R-:W-:-:S01]         /*0680*/                   LDS.U.128 R60, [R40+0x2200] ;
+      [-R--:B------:R-:W-:-:S02]         /*0690*/                   FFMA R45, R54, R46.reuse, R42 ;
+      [----:B------:R-:W-:Y:S02]         /*06a0*/                   FFMA R43, R55, R46, R43 ;
+      [-R--:B------:R-:W-:-:S02]         /*06b0*/                   FFMA R72, R56, R46.reuse, R36 ;
+      [-R--:B------:R-:W-:-:S02]         /*06c0*/                   FFMA R42, R57, R46.reuse, R37 ;
+      [-R--:B------:R-:W-:-:S02]         /*06d0*/                   FFMA R41, R58, R46.reuse, R38 ;
+      [----:B------:R-:W-:-:S02]         /*06e0*/                   FFMA R73, R59, R46, R39 ;
+      [-R--:B------:R-:W-:-:S01]         /*06f0*/                   FFMA R123, R52, R47.reuse, R32 ;
+      [----:B------:R-:W-:-:S01]         /*0700*/                   LDS.U.128 R36, [R92+0x200] ;
+      [----:B------:R-:W-:Y:S02]         /*0710*/                   FFMA R126, R53, R47, R33 ;
+      [-R--:B------:R-:W-:-:S02]         /*0720*/                   FFMA R46, R54, R47.reuse, R34 ;
+      [-R--:B------:R-:W-:-:S02]         /*0730*/                   FFMA R94, R55, R47.reuse, R35 ;
+      [----:B------:R-:W0:-:S01]         /*0740*/                   LDS.U.128 R32, [R92+0x210] ;
+      [RR--:B------:R-:W-:-:S02]         /*0750*/                   FFMA R117, R56.reuse, R47.reuse, R28 ;
+      [----:B----4-:R-:W-:-:S02]         /*0760*/                   FFMA R113, R56, R48, R20 ;
+      [-R--:B------:R-:W-:-:S02]         /*0770*/                   FFMA R116, R57, R47.reuse, R29 ;
+      [----:B------:R-:W-:Y:S02]         /*0780*/                   FFMA R115, R58, R47, R30 ;
+      [----:B------:R-:W-:-:S02]         /*0790*/                   FFMA R114, R59, R47, R31 ;
+      [R---:B------:R-:W-:-:S02]         /*07a0*/                   FFMA R28, R52.reuse, R48, R24 ;
+      [-R--:B------:R-:W-:-:S02]         /*07b0*/                   FFMA R20, R52, R49.reuse, R16 ;
+      [-R--:B------:R-:W-:-:S02]         /*07c0*/                   FFMA R17, R53, R49.reuse, R17 ;
+      [-R--:B------:R-:W-:-:S02]         /*07d0*/                   FFMA R16, R54, R49.reuse, R18 ;
+      [----:B------:R-:W-:Y:S02]         /*07e0*/                   FFMA R24, R55, R49, R19 ;
+      [-R--:B------:R-:W-:-:S02]         /*07f0*/                   FFMA R31, R56, R49.reuse, R12 ;
+      [-R--:B------:R-:W-:-:S02]         /*0800*/                   FFMA R30, R57, R49.reuse, R13 ;
+      [-R--:B------:R-:W-:-:S02]         /*0810*/                   FFMA R29, R58, R49.reuse, R14 ;
+      [----:B------:R-:W-:-:S02]         /*0820*/                   FFMA R49, R59, R49, R15 ;
+      [----:B------:R-:W1:-:S01]         /*0830*/                   LDS.U.128 R12, [R40+0x2210] ;
+      [-R--:B------:R-:W-:-:S02]         /*0840*/                   FFMA R25, R53, R48.reuse, R25 ;
+      [----:B------:R-:W-:Y:S02]         /*0850*/                   FFMA R26, R54, R48, R26 ;
+      [R---:B------:R-:W-:-:S02]         /*0860*/                   FFMA R27, R55.reuse, R48, R27 ;
+      [R---:B------:R-:W-:-:S02]         /*0870*/                   FFMA R79, R55.reuse, R50, R79 ;
+      [----:B------:R-:W-:-:S02]         /*0880*/                   FFMA R55, R55, R51, R87 ;
+      [-R--:B------:R-:W-:-:S02]         /*0890*/                   FFMA R112, R57, R48.reuse, R21 ;
+      [-R--:B------:R-:W-:-:S02]         /*08a0*/                   FFMA R110, R58, R48.reuse, R22 ;
+      [----:B------:R-:W-:Y:S02]         /*08b0*/                   FFMA R111, R59, R48, R23 ;
+      [-R--:B------:R-:W-:-:S02]         /*08c0*/                   FFMA R76, R52, R50.reuse, R76 ;
+      [-R--:B------:R-:W-:-:S02]         /*08d0*/                   FFMA R77, R53, R50.reuse, R77 ;
+      [-R--:B------:R-:W-:-:S02]         /*08e0*/                   FFMA R78, R54, R50.reuse, R78 ;
+      [-R--:B------:R-:W-:-:S02]         /*08f0*/                   FFMA R80, R56, R50.reuse, R80 ;
+      [-R--:B------:R-:W-:-:S02]         /*0900*/                   FFMA R81, R57, R50.reuse, R81 ;
+      [----:B------:R-:W-:Y:S02]         /*0910*/                   FFMA R82, R58, R50, R82 ;
+      [----:B------:R-:W-:-:S02]         /*0920*/                   FFMA R83, R59, R50, R83 ;
+      [-R--:B------:R-:W-:-:S02]         /*0930*/                   FFMA R107, R58, R51.reuse, R98 ;
+      [----:B0-----:R-:W-:-:S02]         /*0940*/                   FFMA R87, R32, R60, R28 ;
+      [-R--:B------:R-:W-:-:S02]         /*0950*/                   FFMA R50, R52, R51.reuse, R84 ;
+      [-R--:B------:R-:W-:-:S02]         /*0960*/                   FFMA R48, R53, R51.reuse, R85 ;
+      [----:B------:R-:W-:Y:S02]         /*0970*/                   FFMA R54, R54, R51, R86 ;
+      [-R--:B------:R-:W-:-:S02]         /*0980*/                   FFMA R109, R56, R51.reuse, R96 ;
+      [-R--:B------:R-:W-:-:S02]         /*0990*/                   FFMA R108, R57, R51.reuse, R97 ;
+      [----:B------:R-:W-:-:S02]         /*09a0*/                   FFMA R106, R59, R51, R99 ;
+      [----:B------:R-:W-:-:S02]         /*09b0*/                   FFMA R98, R33, R61, R17 ;
+      [----:B------:R-:W-:-:S02]         /*09c0*/                   FFMA R28, R39, R63, R94 ;
+      [----:B------:R-:W-:Y:S02]         /*09d0*/                   FFMA R51, R33, R60, R20 ;
+      [----:B------:R-:W-:-:S01]         /*09e0*/                   FFMA R86, R32, R61, R25 ;
+      [----:B------:R-:W-:-:S01]         /*09f0*/                   LDS.U.128 R20, [R92+0x400] ;
+      [-R--:B------:R-:W-:-:S02]         /*0a00*/                   FFMA R19, R37, R62.reuse, R44 ;
+      [-R--:B------:R-:W-:-:S02]         /*0a10*/                   FFMA R18, R38, R62.reuse, R45 ;
+      [-R--:B------:R-:W-:-:S02]         /*0a20*/                   FFMA R17, R39, R62.reuse, R46 ;
+      [R---:B------:R-:W-:-:S01]         /*0a30*/                   FFMA R85, R32.reuse, R62, R26 ;
+      [----:B------:R-:W0:-:S01]         /*0a40*/                   LDS.U.128 R44, [R40+0x2400] ;
+      [----:B------:R-:W-:Y:S02]         /*0a50*/                   FFMA R97, R32, R63, R27 ;
+      [R---:B------:R-:W-:-:S02]         /*0a60*/                   FFMA R94, R33.reuse, R63, R24 ;
+      [----:B------:R-:W2:-:S01]         /*0a70*/                   LDS.U.128 R24, [R92+0x410] ;
+      [----:B------:R-:W-:-:S02]         /*0a80*/                   FFMA R52, R38, R60, R95 ;
+      [----:B------:R-:W-:-:S02]         /*0a90*/                   FFMA R84, R33, R62, R16 ;
+      [-R--:B------:R-:W-:-:S02]         /*0aa0*/                   FFMA R125, R36, R60.reuse, R125 ;
+      [-R--:B------:R-:W-:-:S02]         /*0ab0*/                   FFMA R124, R37, R60.reuse, R124 ;
+      [----:B------:R-:W-:Y:S02]         /*0ac0*/                   FFMA R123, R39, R60, R123 ;
+      [-R--:B------:R-:W-:-:S02]         /*0ad0*/                   FFMA R76, R34, R60.reuse, R76 ;
+      [----:B------:R-:W-:-:S02]         /*0ae0*/                   FFMA R50, R35, R60, R50 ;
+      [-R--:B------:R-:W-:-:S02]         /*0af0*/                   FFMA R122, R36, R61.reuse, R122 ;
+      [-R--:B------:R-:W-:-:S02]         /*0b00*/                   FFMA R121, R37, R61.reuse, R121 ;
+      [-R--:B------:R-:W-:-:S02]         /*0b10*/                   FFMA R120, R38, R61.reuse, R120 ;
+      [----:B------:R-:W-:Y:S02]         /*0b20*/                   FFMA R99, R39, R61, R126 ;
+      [-R--:B------:R-:W-:-:S02]         /*0b30*/                   FFMA R77, R34, R61.reuse, R77 ;
+      [R---:B------:R-:W-:-:S02]         /*0b40*/                   FFMA R48, R35.reuse, R61, R48 ;
+      [-R--:B------:R-:W-:-:S02]         /*0b50*/                   FFMA R74, R36, R62.reuse, R74 ;
+      [-R--:B------:R-:W-:-:S02]         /*0b60*/                   FFMA R78, R34, R62.reuse, R78 ;
+      [----:B------:R-:W-:-:S02]         /*0b70*/                   FFMA R16, R35, R62, R54 ;
+      [----:B------:R-:W-:Y:S02]         /*0b80*/                   FFMA R75, R36, R63, R75 ;
+      [-R--:B------:R-:W-:-:S02]         /*0b90*/                   FFMA R67, R37, R63.reuse, R67 ;
+      [-R--:B------:R-:W-:-:S02]         /*0ba0*/                   FFMA R43, R38, R63.reuse, R43 ;
+      [-R--:B------:R-:W-:-:S02]         /*0bb0*/                   FFMA R79, R34, R63.reuse, R79 ;
+      [----:B------:R-:W-:-:S02]         /*0bc0*/                   FFMA R95, R35, R63, R55 ;
+      [R---:B-1----:R-:W-:-:S02]         /*0bd0*/                   FFMA R68, R36.reuse, R12, R68 ;
+      [----:B------:R-:W-:Y:S02]         /*0be0*/                   FFMA R69, R36, R13, R69 ;
+      [R---:B------:R-:W-:-:S02]         /*0bf0*/                   FFMA R70, R36.reuse, R14, R70 ;
+      [----:B------:R-:W-:-:S02]         /*0c00*/                   FFMA R71, R36, R15, R71 ;
+      [R---:B------:R-:W-:-:S02]         /*0c10*/                   FFMA R60, R37.reuse, R12, R65 ;
+      [R---:B------:R-:W-:-:S02]         /*0c20*/                   FFMA R61, R37.reuse, R13, R64 ;
+      [----:B------:R-:W-:-:S01]         /*0c30*/                   FFMA R62, R37, R14, R0 ;
+      [----:B------:R-:W-:-:S01]         /*0c40*/                   IADD3 R0, R93, 0x8, RZ ;
+      [----:B------:R-:W-:Y:S02]         /*0c50*/                   FFMA R63, R37, R15, R66 ;
+      [----:B------:R-:W-:-:S01]         /*0c60*/                   FFMA R96, R38, R12, R72 ;
+      [----:B------:R-:W-:-:S01]         /*0c70*/                   ISETP.GE.AND P0, PT, R0, c[0x0][0x180], PT ;
+      [R---:B------:R-:W-:-:S02]         /*0c80*/                   FFMA R59, R38.reuse, R13, R42 ;
+      [R---:B------:R-:W-:-:S02]         /*0c90*/                   FFMA R58, R38.reuse, R14, R41 ;
+      [----:B------:R-:W-:-:S02]         /*0ca0*/                   FFMA R57, R38, R15, R73 ;
+      [R---:B------:R-:W-:-:S02]         /*0cb0*/                   FFMA R117, R39.reuse, R12, R117 ;
+      [----:B------:R-:W-:Y:S02]         /*0cc0*/                   FFMA R116, R39, R13, R116 ;
+      [R---:B------:R-:W-:-:S02]         /*0cd0*/                   FFMA R115, R39.reuse, R14, R115 ;
+      [----:B------:R-:W-:-:S02]         /*0ce0*/                   FFMA R114, R39, R15, R114 ;
+      [----:B------:R-:W1:-:S01]         /*0cf0*/                   LDS.U.128 R36, [R40+0x2410] ;
+      [R---:B------:R-:W-:-:S02]         /*0d00*/                   FFMA R113, R32.reuse, R12, R113 ;
+      [R---:B------:R-:W-:-:S02]         /*0d10*/                   FFMA R112, R32.reuse, R13, R112 ;
+      [R---:B------:R-:W-:-:S02]         /*0d20*/                   FFMA R110, R32.reuse, R14, R110 ;
+      [----:B------:R-:W-:Y:S02]         /*0d30*/                   FFMA R111, R32, R15, R111 ;
+      [R---:B------:R-:W-:-:S02]         /*0d40*/                   FFMA R80, R34.reuse, R12, R80 ;
+      [R---:B------:R-:W-:-:S02]         /*0d50*/                   FFMA R81, R34.reuse, R13, R81 ;
+      [R---:B------:R-:W-:-:S02]         /*0d60*/                   FFMA R82, R34.reuse, R14, R82 ;
+      [----:B------:R-:W-:-:S02]         /*0d70*/                   FFMA R83, R34, R15, R83 ;
+      [R---:B------:R-:W-:-:S02]         /*0d80*/                   FFMA R109, R35.reuse, R12, R109 ;
+      [----:B------:R-:W-:Y:S02]         /*0d90*/                   FFMA R108, R35, R13, R108 ;
+      [R---:B------:R-:W-:-:S02]         /*0da0*/                   FFMA R107, R35.reuse, R14, R107 ;
+      [----:B------:R-:W-:-:S02]         /*0db0*/                   FFMA R106, R35, R15, R106 ;
+      [-R--:B0-----:R-:W-:-:S02]         /*0dc0*/                   FFMA R72, R20, R44.reuse, R125 ;
+      [-R--:B------:R-:W-:-:S02]         /*0dd0*/                   FFMA R64, R21, R44.reuse, R124 ;
+      [-R--:B------:R-:W-:-:S02]         /*0de0*/                   FFMA R52, R22, R44.reuse, R52 ;
+      [----:B------:R-:W-:Y:S02]         /*0df0*/                   FFMA R32, R23, R44, R123 ;
+      [-R--:B--2---:R-:W-:-:S02]         /*0e00*/                   FFMA R87, R24, R44.reuse, R87 ;
+      [-R--:B------:R-:W-:-:S02]         /*0e10*/                   FFMA R51, R25, R44.reuse, R51 ;
+      [-R--:B------:R-:W-:-:S02]         /*0e20*/                   FFMA R76, R26, R44.reuse, R76 ;
+      [----:B------:R-:W-:-:S02]         /*0e30*/                   FFMA R50, R27, R44, R50 ;
+      [R---:B------:R-:W-:-:S02]         /*0e40*/                   FFMA R56, R33.reuse, R12, R31 ;
+      [----:B------:R-:W-:Y:S02]         /*0e50*/                   FFMA R55, R33, R13, R30 ;
+      [R---:B------:R-:W-:-:S02]         /*0e60*/                   FFMA R53, R33.reuse, R14, R29 ;
+      [----:B------:R-:W-:-:S02]         /*0e70*/                   FFMA R54, R33, R15, R49 ;
+      [-R--:B------:R-:W-:-:S01]         /*0e80*/                   FFMA R66, R21, R46.reuse, R19 ;
+      [----:B------:R-:W-:-:S01]         /*0e90*/                   LDS.U.128 R12, [R92+0x600] ;
+      [-R--:B------:R-:W-:-:S02]         /*0ea0*/                   FFMA R42, R22, R46.reuse, R18 ;
+      [-R--:B------:R-:W-:-:S02]         /*0eb0*/                   FFMA R34, R23, R46.reuse, R17 ;
+      [----:B------:R-:W-:Y:S02]         /*0ec0*/                   FFMA R44, R27, R46, R16 ;
+      [----:B------:R-:W-:-:S01]         /*0ed0*/                   FFMA R35, R23, R47, R28 ;
+      [----:B------:R-:W0:-:S01]         /*0ee0*/                   LDS.U.128 R16, [R40+0x2600] ;
+      [-R--:B------:R-:W-:-:S02]         /*0ef0*/                   FFMA R73, R20, R45.reuse, R122 ;
+      [-R--:B------:R-:W-:-:S01]         /*0f00*/                   FFMA R65, R21, R45.reuse, R121 ;
+      [----:B------:R-:W2:-:S01]         /*0f10*/                   LDS.U.128 R28, [R92+0x610] ;
+      [-R--:B------:R-:W-:-:S02]         /*0f20*/                   FFMA R41, R22, R45.reuse, R120 ;
+      [----:B------:R-:W-:-:S02]         /*0f30*/                   FFMA R33, R23, R45, R99 ;
+      [----:B------:R-:W-:Y:S02]         /*0f40*/                   FFMA R74, R20, R46, R74 ;
+      [-R--:B------:R-:W-:-:S02]         /*0f50*/                   FFMA R75, R20, R47.reuse, R75 ;
+      [-R--:B------:R-:W-:-:S02]         /*0f60*/                   FFMA R67, R21, R47.reuse, R67 ;
+      [----:B------:R-:W-:-:S02]         /*0f70*/                   FFMA R43, R22, R47, R43 ;
+      [R---:B-1----:R-:W-:-:S02]         /*0f80*/                   FFMA R68, R20.reuse, R36, R68 ;
+      [R---:B------:R-:W-:-:S02]         /*0f90*/                   FFMA R69, R20.reuse, R37, R69 ;
+      [----:B------:R-:W-:Y:S02]         /*0fa0*/                   FFMA R70, R20, R38, R70 ;
+      [----:B------:R-:W-:-:S02]         /*0fb0*/                   FFMA R71, R20, R39, R71 ;
+      [R---:B------:R-:W-:-:S02]         /*0fc0*/                   FFMA R60, R21.reuse, R36, R60 ;
+      [R---:B------:R-:W-:-:S02]         /*0fd0*/                   FFMA R61, R21.reuse, R37, R61 ;
+      [R---:B------:R-:W-:-:S02]         /*0fe0*/                   FFMA R62, R21.reuse, R38, R62 ;
+      [----:B------:R-:W-:-:S02]         /*0ff0*/                   FFMA R63, R21, R39, R63 ;
+      [----:B------:R-:W-:Y:S02]         /*1000*/                   FFMA R96, R22, R36, R96 ;
+      [R---:B------:R-:W-:-:S02]         /*1010*/                   FFMA R59, R22.reuse, R37, R59 ;
+      [R---:B------:R-:W-:-:S02]         /*1020*/                   FFMA R58, R22.reuse, R38, R58 ;
+      [----:B------:R-:W-:-:S02]         /*1030*/                   FFMA R57, R22, R39, R57 ;
+      [R---:B------:R-:W-:-:S02]         /*1040*/                   FFMA R117, R23.reuse, R36, R117 ;
+      [R---:B------:R-:W-:-:S02]         /*1050*/                   FFMA R116, R23.reuse, R37, R116 ;
+      [----:B------:R-:W-:Y:S02]         /*1060*/                   FFMA R115, R23, R38, R115 ;
+      [----:B------:R-:W-:-:S02]         /*1070*/                   FFMA R114, R23, R39, R114 ;
+      [----:B------:R-:W1:-:S01]         /*1080*/                   LDS.U.128 R20, [R40+0x2610] ;
+      [-R--:B------:R-:W-:-:S02]         /*1090*/                   FFMA R86, R24, R45.reuse, R86 ;
+      [-R--:B------:R-:W-:-:S02]         /*10a0*/                   FFMA R49, R25, R45.reuse, R98 ;
+      [-R--:B------:R-:W-:-:S02]         /*10b0*/                   FFMA R77, R26, R45.reuse, R77 ;
+      [----:B------:R-:W-:-:S02]         /*10c0*/                   FFMA R48, R27, R45, R48 ;
+      [----:B------:R-:W-:Y:S02]         /*10d0*/                   FFMA R85, R24, R46, R85 ;
+      [RR--:B------:R-:W-:-:S02]         /*10e0*/                   FFMA R84, R25.reuse, R46.reuse, R84 ;
+      [----:B------:R-:W-:-:S02]         /*10f0*/                   FFMA R78, R26, R46, R78 ;
+      [-R--:B------:R-:W-:-:S02]         /*1100*/                   FFMA R97, R24, R47.reuse, R97 ;
+      [-R--:B------:R-:W-:-:S02]         /*1110*/                   FFMA R94, R25, R47.reuse, R94 ;
+      [-R--:B------:R-:W-:-:S02]         /*1120*/                   FFMA R79, R26, R47.reuse, R79 ;
+      [----:B------:R-:W-:Y:S02]         /*1130*/                   FFMA R95, R27, R47, R95 ;
+      [R---:B------:R-:W-:-:S02]         /*1140*/                   FFMA R113, R24.reuse, R36, R113 ;
+      [R---:B------:R-:W-:-:S02]         /*1150*/                   FFMA R112, R24.reuse, R37, R112 ;
+      [R---:B------:R-:W-:-:S02]         /*1160*/                   FFMA R110, R24.reuse, R38, R110 ;
+      [----:B------:R-:W-:-:S02]         /*1170*/                   FFMA R111, R24, R39, R111 ;
+      [R---:B------:R-:W-:-:S02]         /*1180*/                   FFMA R56, R25.reuse, R36, R56 ;
+      [----:B------:R-:W-:Y:S02]         /*1190*/                   FFMA R55, R25, R37, R55 ;
+      [R---:B------:R-:W-:-:S02]         /*11a0*/                   FFMA R53, R25.reuse, R38, R53 ;
+      [----:B------:R-:W-:-:S02]         /*11b0*/                   FFMA R54, R25, R39, R54 ;
+      [R---:B------:R-:W-:-:S02]         /*11c0*/                   FFMA R80, R26.reuse, R36, R80 ;
+      [R---:B------:R-:W-:-:S02]         /*11d0*/                   FFMA R81, R26.reuse, R37, R81 ;
+      [R---:B------:R-:W-:-:S02]         /*11e0*/                   FFMA R82, R26.reuse, R38, R82 ;
+      [----:B------:R-:W-:Y:S02]         /*11f0*/                   FFMA R83, R26, R39, R83 ;
+      [R---:B------:R-:W-:-:S02]         /*1200*/                   FFMA R109, R27.reuse, R36, R109 ;
+      [R---:B------:R-:W-:-:S02]         /*1210*/                   FFMA R108, R27.reuse, R37, R108 ;
+      [R---:B------:R-:W-:-:S02]         /*1220*/                   FFMA R107, R27.reuse, R38, R107 ;
+      [----:B------:R-:W-:-:S02]         /*1230*/                   FFMA R106, R27, R39, R106 ;
+      [-R--:B0-----:R-:W-:-:S01]         /*1240*/                   FFMA R72, R12, R16.reuse, R72 ;
+      [----:B------:R-:W-:-:S01]         /*1250*/                   LDS.U.128 R24, [R92+0x800] ;
+      [----:B------:R-:W-:Y:S02]         /*1260*/                   FFMA R64, R13, R16, R64 ;
+      [-R--:B------:R-:W-:-:S01]         /*1270*/                   FFMA R52, R14, R16.reuse, R52 ;
+      [----:B------:R-:W0:-:S01]         /*1280*/                   LDS.U.128 R36, [R40+0x2800] ;
+      [-R--:B------:R-:W-:-:S02]         /*1290*/                   FFMA R32, R15, R16.reuse, R32 ;
+      [-R--:B--2---:R-:W-:-:S02]         /*12a0*/                   FFMA R87, R28, R16.reuse, R87 ;
+      [-R--:B------:R-:W-:-:S02]         /*12b0*/                   FFMA R51, R29, R16.reuse, R51 ;
+      [-R--:B------:R-:W-:-:S02]         /*12c0*/                   FFMA R76, R30, R16.reuse, R76 ;
+      [----:B------:R-:W-:Y:S02]         /*12d0*/                   FFMA R50, R31, R16, R50 ;
+      [-R--:B------:R-:W-:-:S02]         /*12e0*/                   FFMA R73, R12, R17.reuse, R73 ;
+      [-R--:B------:R-:W-:-:S02]         /*12f0*/                   FFMA R65, R13, R17.reuse, R65 ;
+      [-R--:B------:R-:W-:-:S02]         /*1300*/                   FFMA R41, R14, R17.reuse, R41 ;
+      [-R--:B------:R-:W-:-:S02]         /*1310*/                   FFMA R33, R15, R17.reuse, R33 ;
+      [-R--:B------:R-:W-:-:S02]         /*1320*/                   FFMA R86, R28, R17.reuse, R86 ;
+      [----:B------:R-:W-:Y:S02]         /*1330*/                   FFMA R49, R29, R17, R49 ;
+      [-R--:B------:R-:W-:-:S02]         /*1340*/                   FFMA R77, R30, R17.reuse, R77 ;
+      [----:B------:R-:W-:-:S02]         /*1350*/                   FFMA R48, R31, R17, R48 ;
+      [-R--:B------:R-:W-:-:S02]         /*1360*/                   FFMA R74, R12, R18.reuse, R74 ;
+      [-R--:B------:R-:W-:-:S02]         /*1370*/                   FFMA R66, R13, R18.reuse, R66 ;
+      [-R--:B------:R-:W-:-:S02]         /*1380*/                   FFMA R42, R14, R18.reuse, R42 ;
+      [----:B------:R-:W-:Y:S02]         /*1390*/                   FFMA R34, R15, R18, R34 ;
+      [-R--:B------:R-:W-:-:S02]         /*13a0*/                   FFMA R85, R28, R18.reuse, R85 ;
+      [-R--:B------:R-:W-:-:S02]         /*13b0*/                   FFMA R84, R29, R18.reuse, R84 ;
+      [-R--:B------:R-:W-:-:S02]         /*13c0*/                   FFMA R78, R30, R18.reuse, R78 ;
+      [----:B------:R-:W-:-:S02]         /*13d0*/                   FFMA R44, R31, R18, R44 ;
+      [-R--:B------:R-:W-:-:S02]         /*13e0*/                   FFMA R75, R12, R19.reuse, R75 ;
+      [----:B------:R-:W-:Y:S02]         /*13f0*/                   FFMA R67, R13, R19, R67 ;
+      [-R--:B------:R-:W-:-:S02]         /*1400*/                   FFMA R43, R14, R19.reuse, R43 ;
+      [-R--:B------:R-:W-:-:S02]         /*1410*/                   FFMA R35, R15, R19.reuse, R35 ;
+      [-R--:B------:R-:W-:-:S02]         /*1420*/                   FFMA R97, R28, R19.reuse, R97 ;
+      [-R--:B------:R-:W-:-:S02]         /*1430*/                   FFMA R94, R29, R19.reuse, R94 ;
+      [-R--:B------:R-:W-:-:S02]         /*1440*/                   FFMA R79, R30, R19.reuse, R79 ;
+      [----:B------:R-:W-:Y:S02]         /*1450*/                   FFMA R95, R31, R19, R95 ;
+      [----:B------:R-:W2:-:S01]         /*1460*/                   LDS.U.128 R16, [R92+0x810] ;
+      [R---:B-1----:R-:W-:-:S02]         /*1470*/                   FFMA R60, R13.reuse, R20, R60 ;
+      [R---:B------:R-:W-:-:S02]         /*1480*/                   FFMA R61, R13.reuse, R21, R61 ;
+      [R---:B------:R-:W-:-:S02]         /*1490*/                   FFMA R62, R13.reuse, R22, R62 ;
+      [----:B------:R-:W-:-:S01]         /*14a0*/                   FFMA R63, R13, R23, R63 ;
+      [----:B------:R-:W-:-:S01]         /*14b0*/              @!P0 IADD3 R13, R93, 0x8, R101 ;
+      [R---:B------:R-:W-:-:S02]         /*14c0*/                   FFMA R68, R12.reuse, R20, R68 ;
+      [----:B------:R-:W-:Y:S02]         /*14d0*/                   FFMA R69, R12, R21, R69 ;
+      [----:B------:R-:W-:-:S02]         /*14e0*/              @!P0 IMAD R13, R13, c[0x0][0x17c], R100 ;
+      [R---:B------:R-:W-:-:S02]         /*14f0*/                   FFMA R70, R12.reuse, R22, R70 ;
+      [----:B------:R-:W-:-:S02]         /*1500*/                   FFMA R71, R12, R23, R71 ;
+      [----:B------:R-:W-:Y:S04]         /*1510*/              @!P0 IMAD.WIDE R12, R13, 0x4, R118 ;
+      [R---:B------:R-:W-:-:S02]         /*1520*/                   FFMA R96, R14.reuse, R20, R96 ;
+      [R---:B------:R-:W-:-:S02]         /*1530*/                   FFMA R59, R14.reuse, R21, R59 ;
+      [R---:B------:R-:W-:-:S01]         /*1540*/                   FFMA R58, R14.reuse, R22, R58 ;
+      [----:B-----5:R1:W5:-:S01]         /*1550*/              @!P0 LDG.E.128.CONSTANT.SYS R88, [R12] ;
+      [----:B------:R-:W-:-:S02]         /*1560*/                   FFMA R57, R14, R23, R57 ;
+      [R---:B------:R-:W-:-:S02]         /*1570*/                   FFMA R117, R15.reuse, R20, R117 ;
+      [----:B------:R-:W-:Y:S02]         /*1580*/                   FFMA R116, R15, R21, R116 ;
+      [R---:B------:R-:W-:-:S02]         /*1590*/                   FFMA R115, R15.reuse, R22, R115 ;
+      [----:B------:R-:W-:-:S02]         /*15a0*/                   FFMA R114, R15, R23, R114 ;
+      [----:B-1----:R-:W1:-:S01]         /*15b0*/                   LDS.U.128 R12, [R40+0x2810] ;
+      [----:B------:R-:W-:Y:S04]         /*15c0*/              @!P0 IMAD.WIDE R46, R93, 0x4, R104 ;
+      [-R--:B0-----:R-:W-:-:S02]         /*15d0*/                   FFMA R74, R24, R38.reuse, R74 ;
+      [-R--:B------:R-:W-:-:S02]         /*15e0*/                   FFMA R66, R25, R38.reuse, R66 ;
+      [-R--:B------:R-:W-:-:S01]         /*15f0*/                   FFMA R42, R26, R38.reuse, R42 ;
+      [----:B------:R0:W5:-:S01]         /*1600*/              @!P0 LDG.E.128.CONSTANT.SYS R8, [R46+0x20] ;
+      [-R--:B------:R-:W-:-:S02]         /*1610*/                   FFMA R34, R27, R38.reuse, R34 ;
+      [-R--:B--2---:R-:W-:-:S02]         /*1620*/                   FFMA R85, R16, R38.reuse, R85 ;
+      [----:B------:R-:W-:Y:S02]         /*1630*/                   FFMA R84, R17, R38, R84 ;
+      [----:B------:R-:W-:-:S02]         /*1640*/                   FFMA R78, R18, R38, R78 ;
+      [R---:B------:R-:W-:-:S02]         /*1650*/                   FFMA R113, R28.reuse, R20, R113 ;
+      [R---:B------:R-:W-:-:S02]         /*1660*/                   FFMA R112, R28.reuse, R21, R112 ;
+      [R---:B------:R-:W-:-:S02]         /*1670*/                   FFMA R110, R28.reuse, R22, R110 ;
+      [----:B------:R-:W-:-:S02]         /*1680*/                   FFMA R111, R28, R23, R111 ;
+      [----:B------:R-:W-:Y:S02]         /*1690*/                   FFMA R56, R29, R20, R56 ;
+      [R---:B------:R-:W-:-:S02]         /*16a0*/                   FFMA R55, R29.reuse, R21, R55 ;
+      [R---:B------:R-:W-:-:S02]         /*16b0*/                   FFMA R53, R29.reuse, R22, R53 ;
+      [----:B------:R-:W-:-:S02]         /*16c0*/                   FFMA R54, R29, R23, R54 ;
+      [R---:B------:R-:W-:-:S02]         /*16d0*/                   FFMA R80, R30.reuse, R20, R80 ;
+      [R---:B------:R-:W-:-:S02]         /*16e0*/                   FFMA R81, R30.reuse, R21, R81 ;
+      [----:B------:R-:W-:Y:S02]         /*16f0*/                   FFMA R82, R30, R22, R82 ;
+      [----:B------:R-:W-:-:S02]         /*1700*/                   FFMA R83, R30, R23, R83 ;
+      [R---:B------:R-:W-:-:S02]         /*1710*/                   FFMA R109, R31.reuse, R20, R109 ;
+      [R---:B------:R-:W-:-:S02]         /*1720*/                   FFMA R108, R31.reuse, R21, R108 ;
+      [R---:B------:R-:W-:-:S02]         /*1730*/                   FFMA R107, R31.reuse, R22, R107 ;
+      [----:B------:R-:W-:-:S02]         /*1740*/                   FFMA R106, R31, R23, R106 ;
+      [----:B------:R-:W-:-:S01]         /*1750*/                   FFMA R38, R19, R38, R44 ;
+      [----:B------:R-:W-:-:S04]         /*1760*/                   LDS.U.128 R20, [R92+0xa00] ;
+      [----:B0-----:R-:W0:-:S04]         /*1770*/                   LDS.U.128 R44, [R40+0x2a00] ;
+      [----:B------:R-:W2:-:S01]         /*1780*/                   LDS.U.128 R28, [R92+0xa10] ;
+      [----:B------:R-:W-:Y:S02]         /*1790*/                   FFMA R72, R24, R36, R72 ;
+      [-R--:B------:R-:W-:-:S02]         /*17a0*/                   FFMA R64, R25, R36.reuse, R64 ;
+      [-R--:B------:R-:W-:-:S02]         /*17b0*/                   FFMA R52, R26, R36.reuse, R52 ;
+      [----:B------:R-:W-:-:S02]         /*17c0*/                   FFMA R32, R27, R36, R32 ;
+      [-R--:B------:R-:W-:-:S02]         /*17d0*/                   FFMA R73, R24, R37.reuse, R73 ;
+      [-R--:B------:R-:W-:-:S02]         /*17e0*/                   FFMA R65, R25, R37.reuse, R65 ;
+      [----:B------:R-:W-:Y:S02]         /*17f0*/                   FFMA R41, R26, R37, R41 ;
+      [----:B------:R-:W-:-:S02]         /*1800*/                   FFMA R33, R27, R37, R33 ;
+      [-R--:B------:R-:W-:-:S02]         /*1810*/                   FFMA R75, R24, R39.reuse, R75 ;
+      [-R--:B------:R-:W-:-:S02]         /*1820*/                   FFMA R67, R25, R39.reuse, R67 ;
+      [-R--:B------:R-:W-:-:S02]         /*1830*/                   FFMA R43, R26, R39.reuse, R43 ;
+      [----:B------:R-:W-:-:S02]         /*1840*/                   FFMA R35, R27, R39, R35 ;
+      [----:B-1----:R-:W-:Y:S02]         /*1850*/                   FFMA R68, R24, R12, R68 ;
+      [R---:B------:R-:W-:-:S02]         /*1860*/                   FFMA R69, R24.reuse, R13, R69 ;
+      [R---:B------:R-:W-:-:S02]         /*1870*/                   FFMA R70, R24.reuse, R14, R70 ;
+      [----:B------:R-:W-:-:S02]         /*1880*/                   FFMA R71, R24, R15, R71 ;
+      [R---:B------:R-:W-:-:S02]         /*1890*/                   FFMA R60, R25.reuse, R12, R60 ;
+      [R---:B------:R-:W-:-:S02]         /*18a0*/                   FFMA R61, R25.reuse, R13, R61 ;
+      [----:B------:R-:W-:Y:S02]         /*18b0*/                   FFMA R62, R25, R14, R62 ;
+      [----:B------:R-:W-:-:S02]         /*18c0*/                   FFMA R63, R25, R15, R63 ;
+      [R---:B------:R-:W-:-:S02]         /*18d0*/                   FFMA R96, R26.reuse, R12, R96 ;
+      [R---:B------:R-:W-:-:S02]         /*18e0*/                   FFMA R59, R26.reuse, R13, R59 ;
+      [R---:B------:R-:W-:-:S02]         /*18f0*/                   FFMA R58, R26.reuse, R14, R58 ;
+      [----:B------:R-:W-:-:S02]         /*1900*/                   FFMA R57, R26, R15, R57 ;
+      [----:B------:R-:W-:Y:S02]         /*1910*/                   FFMA R117, R27, R12, R117 ;
+      [R---:B------:R-:W-:-:S02]         /*1920*/                   FFMA R116, R27.reuse, R13, R116 ;
+      [R---:B------:R-:W-:-:S02]         /*1930*/                   FFMA R115, R27.reuse, R14, R115 ;
+      [----:B------:R-:W-:-:S02]         /*1940*/                   FFMA R114, R27, R15, R114 ;
+      [----:B------:R-:W1:-:S01]         /*1950*/                   LDS.U.128 R24, [R40+0x2a10] ;
+      [-R--:B0-----:R-:W-:-:S02]         /*1960*/                   FFMA R74, R20, R46.reuse, R74 ;
+      [-R--:B------:R-:W-:-:S02]         /*1970*/                   FFMA R66, R21, R46.reuse, R66 ;
+      [----:B------:R-:W-:Y:S02]         /*1980*/                   FFMA R42, R22, R46, R42 ;
+      [-R--:B------:R-:W-:-:S02]         /*1990*/                   FFMA R34, R23, R46.reuse, R34 ;
+      [-R--:B--2---:R-:W-:-:S02]         /*19a0*/                   FFMA R85, R28, R46.reuse, R85 ;
+      [-R--:B------:R-:W-:-:S02]         /*19b0*/                   FFMA R84, R29, R46.reuse, R84 ;
+      [----:B------:R-:W-:-:S02]         /*19c0*/                   FFMA R78, R30, R46, R78 ;
+      [-R--:B------:R-:W-:-:S02]         /*19d0*/                   FFMA R87, R16, R36.reuse, R87 ;
+      [----:B------:R-:W-:Y:S02]         /*19e0*/                   FFMA R51, R17, R36, R51 ;
+      [-R--:B------:R-:W-:-:S02]         /*19f0*/                   FFMA R76, R18, R36.reuse, R76 ;
+      [----:B------:R-:W-:-:S02]         /*1a00*/                   FFMA R50, R19, R36, R50 ;
+      [-R--:B------:R-:W-:-:S02]         /*1a10*/                   FFMA R86, R16, R37.reuse, R86 ;
+      [-R--:B------:R-:W-:-:S02]         /*1a20*/                   FFMA R49, R17, R37.reuse, R49 ;
+      [-R--:B------:R-:W-:-:S02]         /*1a30*/                   FFMA R77, R18, R37.reuse, R77 ;
+      [----:B------:R-:W-:Y:S02]         /*1a40*/                   FFMA R48, R19, R37, R48 ;
+      [-R--:B------:R-:W-:-:S02]         /*1a50*/                   FFMA R97, R16, R39.reuse, R97 ;
+      [-R--:B------:R-:W-:-:S02]         /*1a60*/                   FFMA R94, R17, R39.reuse, R94 ;
+      [-R--:B------:R-:W-:-:S02]         /*1a70*/                   FFMA R79, R18, R39.reuse, R79 ;
+      [----:B------:R-:W-:-:S02]         /*1a80*/                   FFMA R93, R19, R39, R95 ;
+      [R---:B------:R-:W-:-:S02]         /*1a90*/                   FFMA R113, R16.reuse, R12, R113 ;
+      [----:B------:R-:W-:Y:S02]         /*1aa0*/                   FFMA R112, R16, R13, R112 ;
+      [R---:B------:R-:W-:-:S02]         /*1ab0*/                   FFMA R110, R16.reuse, R14, R110 ;
+      [----:B------:R-:W-:-:S02]         /*1ac0*/                   FFMA R111, R16, R15, R111 ;
+      [R---:B------:R-:W-:-:S02]         /*1ad0*/                   FFMA R56, R17.reuse, R12, R56 ;
+      [R---:B------:R-:W-:-:S02]         /*1ae0*/                   FFMA R55, R17.reuse, R13, R55 ;
+      [R---:B------:R-:W-:-:S02]         /*1af0*/                   FFMA R53, R17.reuse, R14, R53 ;
+      [----:B------:R-:W-:Y:S02]         /*1b00*/                   FFMA R54, R17, R15, R54 ;
+      [R---:B------:R-:W-:-:S02]         /*1b10*/                   FFMA R80, R18.reuse, R12, R80 ;
+      [R---:B------:R-:W-:-:S02]         /*1b20*/                   FFMA R81, R18.reuse, R13, R81 ;
+      [R---:B------:R-:W-:-:S02]         /*1b30*/                   FFMA R82, R18.reuse, R14, R82 ;
+      [----:B------:R-:W-:-:S02]         /*1b40*/                   FFMA R83, R18, R15, R83 ;
+      [R---:B------:R-:W-:-:S02]         /*1b50*/                   FFMA R109, R19.reuse, R12, R109 ;
+      [----:B------:R-:W-:Y:S02]         /*1b60*/                   FFMA R108, R19, R13, R108 ;
+      [R---:B------:R-:W-:-:S02]         /*1b70*/                   FFMA R107, R19.reuse, R14, R107 ;
+      [----:B------:R-:W-:-:S02]         /*1b80*/                   FFMA R106, R19, R15, R106 ;
+      [----:B------:R-:W-:-:S01]         /*1b90*/                   FFMA R46, R31, R46, R38 ;
+      [----:B------:R-:W-:-:S04]         /*1ba0*/                   LDS.U.128 R16, [R92+0xc10] ;
+      [----:B------:R-:W0:-:S01]         /*1bb0*/                   LDS.U.128 R36, [R40+0x2c00] ;
+      [----:B------:R-:W-:Y:S02]         /*1bc0*/                   FFMA R72, R20, R44, R72 ;
+      [-R--:B------:R-:W-:-:S01]         /*1bd0*/                   FFMA R64, R21, R44.reuse, R64 ;
+      [----:B------:R-:W2:-:S01]         /*1be0*/                   LDS.U.128 R12, [R92+0xc00] ;
+      [-R--:B------:R-:W-:-:S02]         /*1bf0*/                   FFMA R52, R22, R44.reuse, R52 ;
+      [----:B------:R-:W-:-:S02]         /*1c00*/                   FFMA R32, R23, R44, R32 ;
+      [-R--:B------:R-:W-:-:S02]         /*1c10*/                   FFMA R73, R20, R45.reuse, R73 ;
+      [-R--:B------:R-:W-:-:S02]         /*1c20*/                   FFMA R65, R21, R45.reuse, R65 ;
+      [----:B------:R-:W-:Y:S02]         /*1c30*/                   FFMA R41, R22, R45, R41 ;
+      [----:B------:R-:W-:-:S02]         /*1c40*/                   FFMA R33, R23, R45, R33 ;
+      [-R--:B------:R-:W-:-:S02]         /*1c50*/                   FFMA R75, R20, R47.reuse, R75 ;
+      [-R--:B------:R-:W-:-:S02]         /*1c60*/                   FFMA R67, R21, R47.reuse, R67 ;
+      [-R--:B------:R-:W-:-:S02]         /*1c70*/                   FFMA R43, R22, R47.reuse, R43 ;
+      [----:B------:R-:W-:-:S02]         /*1c80*/                   FFMA R35, R23, R47, R35 ;
+      [----:B-1----:R-:W-:Y:S02]         /*1c90*/                   FFMA R68, R20, R24, R68 ;
+      [R---:B------:R-:W-:-:S02]         /*1ca0*/                   FFMA R69, R20.reuse, R25, R69 ;
+      [R---:B------:R-:W-:-:S02]         /*1cb0*/                   FFMA R70, R20.reuse, R26, R70 ;
+      [----:B------:R-:W-:-:S02]         /*1cc0*/                   FFMA R71, R20, R27, R71 ;
+      [R---:B------:R-:W-:-:S02]         /*1cd0*/                   FFMA R60, R21.reuse, R24, R60 ;
+      [R---:B------:R-:W-:-:S02]         /*1ce0*/                   FFMA R61, R21.reuse, R25, R61 ;
+      [----:B------:R-:W-:Y:S02]         /*1cf0*/                   FFMA R62, R21, R26, R62 ;
+      [----:B------:R-:W-:-:S02]         /*1d00*/                   FFMA R63, R21, R27, R63 ;
+      [R---:B------:R-:W-:-:S02]         /*1d10*/                   FFMA R96, R22.reuse, R24, R96 ;
+      [R---:B------:R-:W-:-:S02]         /*1d20*/                   FFMA R59, R22.reuse, R25, R59 ;
+      [R---:B------:R-:W-:-:S02]         /*1d30*/                   FFMA R58, R22.reuse, R26, R58 ;
+      [----:B------:R-:W-:-:S02]         /*1d40*/                   FFMA R57, R22, R27, R57 ;
+      [----:B------:R-:W-:Y:S02]         /*1d50*/                   FFMA R117, R23, R24, R117 ;
+      [R---:B------:R-:W-:-:S02]         /*1d60*/                   FFMA R116, R23.reuse, R25, R116 ;
+      [R---:B------:R-:W-:-:S02]         /*1d70*/                   FFMA R115, R23.reuse, R26, R115 ;
+      [----:B------:R-:W-:-:S02]         /*1d80*/                   FFMA R114, R23, R27, R114 ;
+      [----:B------:R-:W1:-:S01]         /*1d90*/                   LDS.U.128 R20, [R40+0x2c10] ;
+      [RR--:B------:R-:W-:-:S02]         /*1da0*/                   FFMA R87, R28.reuse, R44.reuse, R87 ;
+      [----:B------:R-:W-:-:S02]         /*1db0*/                   FFMA R86, R28, R45, R86 ;
+      [----:B------:R-:W-:Y:S02]         /*1dc0*/                   FFMA R51, R29, R44, R51 ;
+      [RR--:B------:R-:W-:-:S02]         /*1dd0*/                   FFMA R76, R30.reuse, R44.reuse, R76 ;
+      [----:B------:R-:W-:-:S02]         /*1de0*/                   FFMA R50, R31, R44, R50 ;
+      [-R--:B------:R-:W-:-:S02]         /*1df0*/                   FFMA R49, R29, R45.reuse, R49 ;
+      [-R--:B------:R-:W-:-:S02]         /*1e00*/                   FFMA R77, R30, R45.reuse, R77 ;
+      [----:B------:R-:W-:-:S02]         /*1e10*/                   FFMA R48, R31, R45, R48 ;
+      [----:B------:R-:W-:Y:S02]         /*1e20*/                   FFMA R97, R28, R47, R97 ;
+      [-R--:B------:R-:W-:-:S02]         /*1e30*/                   FFMA R45, R29, R47.reuse, R94 ;
+      [-R--:B------:R-:W-:-:S02]         /*1e40*/                   FFMA R79, R30, R47.reuse, R79 ;
+      [----:B------:R-:W-:-:S02]         /*1e50*/                   FFMA R44, R31, R47, R93 ;
+      [R---:B------:R-:W-:-:S02]         /*1e60*/                   FFMA R113, R28.reuse, R24, R113 ;
+      [R---:B------:R-:W-:-:S02]         /*1e70*/                   FFMA R112, R28.reuse, R25, R112 ;
+      [----:B------:R-:W-:Y:S02]         /*1e80*/                   FFMA R110, R28, R26, R110 ;
+      [----:B------:R-:W-:-:S02]         /*1e90*/                   FFMA R111, R28, R27, R111 ;
+      [R---:B------:R-:W-:-:S02]         /*1ea0*/                   FFMA R56, R29.reuse, R24, R56 ;
+      [R---:B------:R-:W-:-:S02]         /*1eb0*/                   FFMA R55, R29.reuse, R25, R55 ;
+      [R---:B------:R-:W-:-:S02]         /*1ec0*/                   FFMA R53, R29.reuse, R26, R53 ;
+      [----:B------:R-:W-:-:S02]         /*1ed0*/                   FFMA R54, R29, R27, R54 ;
+      [----:B------:R-:W-:Y:S02]         /*1ee0*/                   FFMA R80, R30, R24, R80 ;
+      [R---:B------:R-:W-:-:S02]         /*1ef0*/                   FFMA R81, R30.reuse, R25, R81 ;
+      [R---:B------:R-:W-:-:S02]         /*1f00*/                   FFMA R82, R30.reuse, R26, R82 ;
+      [----:B------:R-:W-:-:S02]         /*1f10*/                   FFMA R83, R30, R27, R83 ;
+      [R---:B------:R-:W-:-:S02]         /*1f20*/                   FFMA R109, R31.reuse, R24, R109 ;
+      [R---:B------:R-:W-:-:S02]         /*1f30*/                   FFMA R108, R31.reuse, R25, R108 ;
+      [----:B------:R-:W-:Y:S02]         /*1f40*/                   FFMA R107, R31, R26, R107 ;
+      [----:B------:R-:W-:-:S02]         /*1f50*/                   FFMA R106, R31, R27, R106 ;
+      [R---:B0-----:R-:W-:-:S01]         /*1f60*/                   FFMA R24, R16.reuse, R36, R87 ;
+      [----:B------:R-:W-:-:S01]         /*1f70*/                   LDS.U.128 R28, [R92+0xe00] ;
+      [R---:B------:R-:W-:-:S02]         /*1f80*/                   FFMA R25, R16.reuse, R37, R86 ;
+      [-R--:B------:R-:W-:-:S01]         /*1f90*/                   FFMA R26, R16, R38.reuse, R85 ;
+      [----:B------:R-:W-:-:S01]         /*1fa0*/                   LDS.U.128 R92, [R92+0xe10] ;
+      [----:B------:R-:W-:Y:S03]         /*1fb0*/                   FFMA R47, R17, R38, R84 ;
+      [----:B------:R-:W0:-:S01]         /*1fc0*/                   LDS.U.128 R84, [R40+0x2e00] ;
+      [-R--:B--2---:R-:W-:-:S02]         /*1fd0*/                   FFMA R72, R12, R36.reuse, R72 ;
+      [-R--:B------:R-:W-:-:S02]         /*1fe0*/                   FFMA R64, R13, R36.reuse, R64 ;
+      [-R--:B------:R-:W-:-:S02]         /*1ff0*/                   FFMA R52, R14, R36.reuse, R52 ;
+      [-R--:B------:R-:W-:-:S02]         /*2000*/                   FFMA R32, R15, R36.reuse, R32 ;
+      [-R--:B------:R-:W-:-:S02]         /*2010*/                   FFMA R51, R17, R36.reuse, R51 ;
+      [----:B------:R-:W-:Y:S02]         /*2020*/                   FFMA R76, R18, R36, R76 ;
+      [----:B------:R-:W-:-:S02]         /*2030*/                   FFMA R50, R19, R36, R50 ;
+      [R---:B------:R-:W-:-:S02]         /*2040*/                   FFMA R73, R12.reuse, R37, R73 ;
+      [R---:B------:R-:W-:-:S02]         /*2050*/                   FFMA R74, R12.reuse, R38, R74 ;
+      [R---:B------:R-:W-:-:S02]         /*2060*/                   FFMA R75, R12.reuse, R39, R75 ;
+      [R---:B-1----:R-:W-:-:S02]         /*2070*/                   FFMA R68, R12.reuse, R20, R68 ;
+      [----:B------:R-:W-:Y:S02]         /*2080*/                   FFMA R69, R12, R21, R69 ;
+      [R---:B------:R-:W-:-:S02]         /*2090*/                   FFMA R70, R12.reuse, R22, R70 ;
+      [----:B------:R-:W-:-:S02]         /*20a0*/                   FFMA R71, R12, R23, R71 ;
+      [-R--:B------:R-:W-:-:S02]         /*20b0*/                   FFMA R60, R13, R20.reuse, R60 ;
+      [-R--:B------:R-:W-:-:S02]         /*20c0*/                   FFMA R36, R14, R20.reuse, R96 ;
+      [-R--:B------:R-:W-:-:S02]         /*20d0*/                   FFMA R117, R15, R20.reuse, R117 ;
+      [----:B------:R-:W-:Y:S02]         /*20e0*/                   FFMA R113, R16, R20, R113 ;
+      [-R--:B------:R-:W-:-:S02]         /*20f0*/                   FFMA R12, R17, R20.reuse, R56 ;
+      [-R--:B------:R-:W-:-:S02]         /*2100*/                   FFMA R80, R18, R20.reuse, R80 ;
+      [----:B------:R-:W-:-:S01]         /*2110*/                   FFMA R109, R19, R20, R109 ;
+      [----:B------:R-:W-:-:S01]         /*2120*/                   LOP3.LUT R20, R2, 0x1000, RZ, 0x3c, !PT ;
+      [-R--:B------:R-:W-:-:S02]         /*2130*/                   FFMA R65, R13, R37.reuse, R65 ;
+      [-R--:B------:R-:W-:-:S02]         /*2140*/                   FFMA R41, R14, R37.reuse, R41 ;
+      [----:B------:R-:W-:Y:S02]         /*2150*/                   FFMA R33, R15, R37, R33 ;
+      [-R--:B------:R-:W-:-:S02]         /*2160*/                   FFMA R49, R17, R37.reuse, R49 ;
+      [-R--:B------:R-:W-:-:S02]         /*2170*/                   FFMA R77, R18, R37.reuse, R77 ;
+      [----:B------:R-:W-:-:S02]         /*2180*/                   FFMA R48, R19, R37, R48 ;
+      [R---:B------:R-:W-:-:S02]         /*2190*/                   FFMA R66, R13.reuse, R38, R66 ;
+      [R---:B------:R-:W-:-:S02]         /*21a0*/                   FFMA R67, R13.reuse, R39, R67 ;
+      [----:B------:R-:W-:Y:S02]         /*21b0*/                   FFMA R61, R13, R21, R61 ;
+      [R---:B------:R-:W-:-:S02]         /*21c0*/                   FFMA R62, R13.reuse, R22, R62 ;
+      [----:B------:R-:W-:-:S02]         /*21d0*/                   FFMA R63, R13, R23, R63 ;
+      [-R--:B------:R-:W-:-:S02]         /*21e0*/                   FFMA R37, R14, R21.reuse, R59 ;
+      [-R--:B------:R-:W-:-:S02]         /*21f0*/                   FFMA R116, R15, R21.reuse, R116 ;
+      [-R--:B------:R-:W-:-:S02]         /*2200*/                   FFMA R112, R16, R21.reuse, R112 ;
+      [----:B------:R-:W-:Y:S02]         /*2210*/                   FFMA R13, R17, R21, R55 ;
+      [-R--:B------:R-:W-:-:S02]         /*2220*/                   FFMA R81, R18, R21.reuse, R81 ;
+      [R---:B------:R-:W-:-:S01]         /*2230*/                   FFMA R108, R19.reuse, R21, R108 ;
+      [----:B------:R-:W-:-:S01]         /*2240*/                   LEA R21, R4, R20, 0x5 ;
+      [----:B------:R-:W-:-:S01]         /*2250*/                   FFMA R46, R19, R38, R46 ;
+      [----:B------:R-:W-:-:S01]         /*2260*/                   LEA R20, R3, R20, 0x5 ;
+      [-R--:B------:R-:W-:-:S02]         /*2270*/                   FFMA R45, R17, R39.reuse, R45 ;
+      [-R--:B------:R-:W-:-:S02]         /*2280*/                   FFMA R44, R19, R39.reuse, R44 ;
+      [----:B------:R-:W-:Y:S02]         /*2290*/                   FFMA R27, R16, R39, R97 ;
+      [-R--:B------:R-:W-:-:S01]         /*22a0*/                   FFMA R42, R14, R38.reuse, R42 ;
+      [----:B------:R1:W2:-:S01]         /*22b0*/                   LDS.U.128 R96, [R40+0x2e10] ;
+      [RR--:B------:R-:W-:-:S02]         /*22c0*/                   FFMA R34, R15.reuse, R38.reuse, R34 ;
+      [----:B------:R-:W-:-:S02]         /*22d0*/                   FFMA R78, R18, R38, R78 ;
+      [-R--:B------:R-:W-:-:S02]         /*22e0*/                   FFMA R43, R14, R39.reuse, R43 ;
+      [-R--:B------:R-:W-:-:S02]         /*22f0*/                   FFMA R35, R15, R39.reuse, R35 ;
+      [----:B------:R-:W-:Y:S02]         /*2300*/                   FFMA R79, R18, R39, R79 ;
+      [RR--:B------:R-:W-:-:S02]         /*2310*/                   FFMA R38, R14.reuse, R22.reuse, R58 ;
+      [-R--:B------:R-:W-:-:S02]         /*2320*/                   FFMA R39, R14, R23.reuse, R57 ;
+      [RR--:B------:R-:W-:-:S01]         /*2330*/                   FFMA R115, R15.reuse, R22.reuse, R115 ;
+      [----:B------:R3:W4:-:S01]         /*2340*/                   LDS.U.128 R56, [R20+0x2010] ;
+      [-R--:B------:R-:W-:-:S02]         /*2350*/                   FFMA R114, R15, R23.reuse, R114 ;
+      [R---:B------:R-:W-:-:S02]         /*2360*/                   FFMA R110, R16.reuse, R22, R110 ;
+      [----:B------:R-:W-:Y:S02]         /*2370*/                   FFMA R111, R16, R23, R111 ;
+      [RR--:B------:R-:W-:-:S02]         /*2380*/                   FFMA R14, R17.reuse, R22.reuse, R53 ;
+      [-R--:B------:R-:W-:-:S02]         /*2390*/                   FFMA R15, R17, R23.reuse, R54 ;
+      [RR--:B------:R-:W-:-:S02]         /*23a0*/                   FFMA R82, R18.reuse, R22.reuse, R82 ;
+      [-R--:B------:R-:W-:-:S02]         /*23b0*/                   FFMA R83, R18, R23.reuse, R83 ;
+      [R---:B------:R-:W-:-:S02]         /*23c0*/                   FFMA R107, R19.reuse, R22, R107 ;
+      [----:B------:R-:W-:Y:S02]         /*23d0*/                   FFMA R106, R19, R23, R106 ;
+      [-R--:B0-----:R-:W-:-:S02]         /*23e0*/                   FFMA R72, R28, R84.reuse, R72 ;
+      [-R--:B------:R-:W-:-:S02]         /*23f0*/                   FFMA R64, R29, R84.reuse, R64 ;
+      [-R--:B-1----:R-:W-:-:S02]         /*2400*/                   FFMA R40, R30, R84.reuse, R52 ;
+      [-R--:B------:R-:W-:-:S01]         /*2410*/                   FFMA R32, R31, R84.reuse, R32 ;
+      [----:B------:R3:W0:-:S01]         /*2420*/                   LDS.U.128 R52, [R20+0x2000] ;
+      [-R--:B------:R-:W-:-:S02]         /*2430*/                   FFMA R24, R92, R84.reuse, R24 ;
+      [----:B------:R-:W-:Y:S02]         /*2440*/                   FFMA R16, R93, R84, R51 ;
+      [----:B------:R-:W-:-:S02]         /*2450*/                   FFMA R76, R94, R84, R76 ;
+      [-R--:B------:R-:W-:-:S02]         /*2460*/                   FFMA R73, R28, R85.reuse, R73 ;
+      [-R--:B------:R-:W-:-:S02]         /*2470*/                   FFMA R65, R29, R85.reuse, R65 ;
+      [-R--:B------:R-:W-:-:S02]         /*2480*/                   FFMA R41, R30, R85.reuse, R41 ;
+      [-R--:B------:R-:W-:-:S02]         /*2490*/                   FFMA R33, R31, R85.reuse, R33 ;
+      [----:B------:R-:W-:Y:S02]         /*24a0*/                   FFMA R25, R92, R85, R25 ;
+      [-R--:B------:R-:W-:-:S02]         /*24b0*/                   FFMA R17, R93, R85.reuse, R49 ;
+      [----:B------:R-:W-:-:S02]         /*24c0*/                   FFMA R77, R94, R85, R77 ;
+      [-R--:B------:R-:W-:-:S02]         /*24d0*/                   FFMA R74, R28, R86.reuse, R74 ;
+      [-R--:B------:R-:W-:-:S02]         /*24e0*/                   FFMA R66, R29, R86.reuse, R66 ;
+      [-R--:B------:R-:W-:-:S02]         /*24f0*/                   FFMA R42, R30, R86.reuse, R42 ;
+      [----:B------:R-:W-:Y:S02]         /*2500*/                   FFMA R34, R31, R86, R34 ;
+      [-R--:B------:R-:W-:-:S02]         /*2510*/                   FFMA R26, R92, R86.reuse, R26 ;
+      [-R--:B------:R-:W-:-:S02]         /*2520*/                   FFMA R18, R93, R86.reuse, R47 ;
+      [----:B------:R-:W-:-:S02]         /*2530*/                   FFMA R78, R94, R86, R78 ;
+      [-R--:B------:R-:W-:-:S02]         /*2540*/                   FFMA R75, R28, R87.reuse, R75 ;
+      [-R--:B------:R-:W-:-:S02]         /*2550*/                   FFMA R67, R29, R87.reuse, R67 ;
+      [----:B------:R-:W-:Y:S02]         /*2560*/                   FFMA R43, R30, R87, R43 ;
+      [-R--:B------:R-:W-:-:S02]         /*2570*/                   FFMA R35, R31, R87.reuse, R35 ;
+      [-R--:B------:R-:W-:-:S02]         /*2580*/                   FFMA R27, R92, R87.reuse, R27 ;
+      [-R--:B------:R-:W-:-:S02]         /*2590*/                   FFMA R19, R93, R87.reuse, R45 ;
+      [----:B------:R-:W-:-:S02]         /*25a0*/                   FFMA R79, R94, R87, R79 ;
+      [R---:B------:R-:W-:-:S02]         /*25b0*/                   FFMA R84, R95.reuse, R84, R50 ;
+      [----:B------:R-:W-:Y:S02]         /*25c0*/                   FFMA R85, R95, R85, R48 ;
+      [R---:B------:R-:W-:-:S01]         /*25d0*/                   FFMA R86, R95.reuse, R86, R46 ;
+      [----:B------:R3:W1:-:S01]         /*25e0*/                   LDS.U.128 R48, [R21+0x10] ;
+      [----:B------:R-:W-:Y:S03]         /*25f0*/                   FFMA R87, R95, R87, R44 ;
+      [----:B------:R3:W0:-:S01]         /*2600*/                   LDS.U.128 R44, [R21] ;
+      [R---:B--2---:R-:W-:-:S02]         /*2610*/                   FFMA R68, R28.reuse, R96, R68 ;
+      [R---:B------:R-:W-:-:S02]         /*2620*/                   FFMA R69, R28.reuse, R97, R69 ;
+      [R---:B------:R-:W-:-:S02]         /*2630*/                   FFMA R70, R28.reuse, R98, R70 ;
+      [----:B------:R-:W-:-:S02]         /*2640*/                   FFMA R71, R28, R99, R71 ;
+      [R---:B------:R-:W-:-:S02]         /*2650*/                   FFMA R60, R29.reuse, R96, R60 ;
+      [----:B------:R-:W-:Y:S02]         /*2660*/                   FFMA R61, R29, R97, R61 ;
+      [R---:B------:R-:W-:-:S02]         /*2670*/                   FFMA R62, R29.reuse, R98, R62 ;
+      [----:B------:R-:W-:-:S02]         /*2680*/                   FFMA R63, R29, R99, R63 ;
+      [R---:B------:R-:W-:-:S02]         /*2690*/                   FFMA R36, R30.reuse, R96, R36 ;
+      [R---:B------:R-:W-:-:S02]         /*26a0*/                   FFMA R37, R30.reuse, R97, R37 ;
+      [R---:B------:R-:W-:-:S02]         /*26b0*/                   FFMA R38, R30.reuse, R98, R38 ;
+      [----:B------:R-:W-:Y:S02]         /*26c0*/                   FFMA R39, R30, R99, R39 ;
+      [R---:B------:R-:W-:-:S02]         /*26d0*/                   FFMA R28, R31.reuse, R96, R117 ;
+      [R---:B------:R-:W-:-:S02]         /*26e0*/                   FFMA R29, R31.reuse, R97, R116 ;
+      [R---:B------:R-:W-:-:S02]         /*26f0*/                   FFMA R30, R31.reuse, R98, R115 ;
+      [----:B------:R-:W-:-:S01]         /*2700*/                   FFMA R31, R31, R99, R114 ;
+      [----:B------:R-:W-:-:S05]         /*2710*/               @P0 BRA `(.L_1) ;
+      [----:B---34-:R-:W-:-:S02]         /*2720*/                   LEA R20, R103, R2, 0xb ;
+      [----:B------:R-:W-:-:S02]         /*2730*/                   IADD3 R21, R6, 0x2000, R2 ;
+      [----:B------:R-:W-:Y:S02]         /*2740*/                   IADD3 R20, R7, R20, RZ ;
+      [----:B------:R-:W-:-:S02]         /*2750*/                   LEA R21, R102, R21, 0x4 ;
+      [----:B------:R-:W-:Y:S04]         /*2760*/                   LOP3.LUT R5, R5, 0x1, RZ, 0x3c, !PT ;
+      [----:B-----5:R-:W-:-:S04]         /*2770*/                   STS [R20], R8 ;
+      [----:B------:R-:W-:-:S04]         /*2780*/                   STS [R20+0x200], R9 ;
+      [----:B------:R-:W-:-:S04]         /*2790*/                   STS [R20+0x400], R10 ;
+      [----:B------:R-:W-:-:S04]         /*27a0*/                   STS [R20+0x600], R11 ;
+      [----:B------:R-:W-:-:S04]         /*27b0*/                   STS.128 [R21], R88 ;
+      [----:B------:R-:W-:-:S01]         /*27c0*/                   NOP ;
+      [----:B------:R-:W-:-:S05]         /*27d0*/                   BAR.SYNC 0x0 ;
+  .L_1:
+      [----:B---34-:R-:W-:-:S01]         /*27e0*/                   ISETP.GE.AND P0, PT, R0, c[0x0][0x180], PT ;
+      [----:B------:R-:W-:Y:S02]         /*27f0*/                   FFMA R20, R92, R96, R113 ;
+      [R---:B------:R-:W-:-:S02]         /*2800*/                   FFMA R21, R92.reuse, R97, R112 ;
+      [R---:B------:R-:W-:-:S02]         /*2810*/                   FFMA R22, R92.reuse, R98, R110 ;
+      [----:B------:R-:W-:-:S02]         /*2820*/                   FFMA R23, R92, R99, R111 ;
+      [R---:B------:R-:W-:-:S02]         /*2830*/                   FFMA R12, R93.reuse, R96, R12 ;
+      [R---:B------:R-:W-:-:S02]         /*2840*/                   FFMA R13, R93.reuse, R97, R13 ;
+      [----:B------:R-:W-:Y:S02]         /*2850*/                   FFMA R14, R93, R98, R14 ;
+      [----:B------:R-:W-:-:S01]         /*2860*/                   FFMA R15, R93, R99, R15 ;
+      [----:B------:R-:W-:-:S01]         /*2870*/                   MOV R93, R0 ;
+      [R---:B------:R-:W-:-:S02]         /*2880*/                   FFMA R80, R94.reuse, R96, R80 ;
+      [R---:B------:R-:W-:-:S02]         /*2890*/                   FFMA R81, R94.reuse, R97, R81 ;
+      [R---:B------:R-:W-:-:S02]         /*28a0*/                   FFMA R82, R94.reuse, R98, R82 ;
+      [----:B------:R-:W-:-:S02]         /*28b0*/                   FFMA R83, R94, R99, R83 ;
+      [----:B------:R-:W-:Y:S02]         /*28c0*/                   FFMA R96, R95, R96, R109 ;
+      [R---:B------:R-:W-:-:S02]         /*28d0*/                   FFMA R97, R95.reuse, R97, R108 ;
+      [R---:B------:R-:W-:-:S02]         /*28e0*/                   FFMA R98, R95.reuse, R98, R107 ;
+      [----:B------:R-:W-:-:S01]         /*28f0*/                   FFMA R99, R95, R99, R106 ;
+      [----:B------:R-:W-:-:S05]         /*2900*/              @!P0 BRA `(.L_2) ;
+      [----:B------:R-:W2:-:S01]         /*2910*/                   S2R R0, SR_CTAID.X ;
+      [----:B------:R-:W-:-:S02]         /*2920*/                   MOV R2, 0x4 ;
+      [----:B0-----:R-:W-:-:S01]         /*2930*/                   MOV R47, c[0x0][0x17c] ;
+      [----:B------:R-:W0:-:S03]         /*2940*/                   S2R R5, SR_CTAID.Y ;
+      [----:B------:R-:W-:Y:S04]         /*2950*/                   SHF.L.U32 R47, R47, 0x2, RZ ;
+      [----:B-1----:R-:W-:-:S02]         /*2960*/                   SHF.R.S32.HI R49, RZ, 0x1f, R47 ;
+      [----:B--2---:R-:W-:-:S02]         /*2970*/                   LEA R3, R0, R3, 0x4 ;
+      [----:B0-----:R-:W-:-:S02]         /*2980*/                   LEA R0, R5, R4, 0x4 ;
+      [----:B------:R-:W-:-:S02]         /*2990*/                   SHF.L.U32 R3, R3, 0x3, RZ ;
+      [----:B------:R-:W-:Y:S05]         /*29a0*/                   SHF.L.U32 R0, R0, 0x3, RZ ;
+      [----:B------:R-:W-:Y:S04]         /*29b0*/                   IMAD R3, R0, c[0x0][0x17c], R3 ;
+      [----:B------:R-:W-:Y:S07]         /*29c0*/                   IMAD.WIDE R2, R3, R2, c[0x0][0x170] ;
+      [----:B------:R-:W-:-:S01]         /*29d0*/                   IADD3 R4, P0, R2, R47, RZ ;
+      [----:B------:R-:W-:-:S03]         /*29e0*/                   STG.E.128.SYS [R2], R72 ;
+      [----:B------:R-:W-:-:S01]         /*29f0*/                   IADD3.X R5, R3, R49, RZ, P0, !PT ;
+      [----:B------:R0:W-:-:S01]         /*2a00*/                   STG.E.128.SYS [R2+0x10], R68 ;
+      [----:B------:R-:W-:Y:S04]         /*2a10*/                   IADD3 R6, P0, R47, R4, RZ ;
+      [----:B------:R-:W-:-:S02]         /*2a20*/                   IADD3.X R7, R49, R5, RZ, P0, !PT ;
+      [R---:B-----5:R-:W-:-:S01]         /*2a30*/                   IADD3 R8, P0, R47.reuse, R6, RZ ;
+      [----:B------:R-:W-:-:S03]         /*2a40*/                   STG.E.128.SYS [R4], R64 ;
+      [----:B------:R-:W-:-:S01]         /*2a50*/                   IADD3 R10, P1, R47, R8, RZ ;
+      [----:B------:R-:W-:-:S01]         /*2a60*/                   STG.E.128.SYS [R4+0x10], R60 ;
+      [----:B------:R-:W-:-:S02]         /*2a70*/                   IADD3.X R9, R49, R7, RZ, P0, !PT ;
+      [----:B------:R-:W-:-:S01]         /*2a80*/                   IADD3 R44, P0, R47, R10, RZ ;
+      [----:B------:R-:W-:-:S01]         /*2a90*/                   STG.E.128.SYS [R6], R40 ;
+      [----:B------:R-:W-:Y:S02]         /*2aa0*/                   IADD3.X R11, R49, R9, RZ, P1, !PT ;
+      [----:B------:R-:W-:-:S01]         /*2ab0*/                   IADD3 R46, P1, R47, R44, RZ ;
+      [----:B------:R-:W-:-:S01]         /*2ac0*/                   STG.E.128.SYS [R6+0x10], R36 ;
+      [----:B------:R-:W-:-:S02]         /*2ad0*/                   IADD3.X R45, R49, R11, RZ, P0, !PT ;
+      [----:B0-----:R-:W-:-:S01]         /*2ae0*/                   IADD3 R2, P0, R47, R46, RZ ;
+      [----:B------:R-:W-:-:S01]         /*2af0*/                   STG.E.128.SYS [R8], R32 ;
+      [----:B------:R-:W-:Y:S03]         /*2b00*/                   IADD3.X R47, R49, R45, RZ, P1, !PT ;
+      [----:B------:R-:W-:-:S01]         /*2b10*/                   STG.E.128.SYS [R8+0x10], R28 ;
+      [----:B------:R-:W-:Y:S03]         /*2b20*/                   IADD3.X R3, R49, R47, RZ, P0, !PT ;
+      [----:B------:R-:W-:-:S04]         /*2b30*/                   STG.E.128.SYS [R10], R24 ;
+      [----:B------:R-:W-:-:S04]         /*2b40*/                   STG.E.128.SYS [R10+0x10], R20 ;
+      [----:B------:R-:W-:-:S04]         /*2b50*/                   STG.E.128.SYS [R44], R16 ;
+      [----:B------:R-:W-:-:S04]         /*2b60*/                   STG.E.128.SYS [R44+0x10], R12 ;
+      [----:B------:R-:W-:-:S04]         /*2b70*/                   STG.E.128.SYS [R46], R76 ;
+      [----:B------:R-:W-:-:S04]         /*2b80*/                   STG.E.128.SYS [R46+0x10], R80 ;
+      [----:B------:R-:W-:-:S04]         /*2b90*/                   STG.E.128.SYS [R2], R84 ;
+      [----:B------:R-:W-:-:S01]         /*2ba0*/                   STG.E.128.SYS [R2+0x10], R96 ;
+      [----:B------:R-:W-:-:S05]         /*2bb0*/                   EXIT ;
+  .L_3:
+      [----:B------:R-:W-:Y:S00]         /*2bc0*/                   BRA `(.L_3);
+  .L_34:
+  
+  
+
+// --------------------- .nv.shared._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii --------------------------
+	.section	.nv.shared._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii,"aw",@nobits
+	.__section_name         0xa7 	// offset in .shstrtab
+	.__section_type         SHT_NOBITS
+	.__section_flags        0x3
+	.__section_addr         0x0
+	.__section_offset       0x3400 	// maybe updated by assembler
+	.__section_size         0x4000 	// maybe updated by assembler
+	.__section_link         0
+	.__section_info         0xa
+	.__section_entsize      0
+	.align                4 	// equivalent to set sh_addralign
+  	.align	4
+  .nv.shared._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii:
+  	.zero		16384
+  //-------------------------------------------------
+  //---------------- END of sections ----------------
+  //-------------------------------------------------
+
+
+// Program segment PT_PHDR, 5 
+  .__segment  "PT_PHDR", 5 
+  .__segment_offset  0x3700   		// maybe updated by assembler 
+  .__segment_vaddr   0x0   		// Seems always 0? 
+  .__segment_paddr   0x0   		// ??? 
+  .__segment_filesz  0xa8   		// file size, maybe updated by assembler 
+  .__segment_memsz   0xa8   		// file size + nobits sections, maybe updated by assembler 
+  .__segment_align     8   		//  
+
+// Program segment PT_LOAD, 5 
+  .__segment  "PT_LOAD", 5 
+  .__segment_offset  0x660   		// maybe updated by assembler 
+  .__segment_vaddr   0x0   		// Seems always 0? 
+  .__segment_paddr   0x0   		// ??? 
+  .__segment_filesz  0x2da0   		// file size, maybe updated by assembler 
+  .__segment_memsz   0x2da0   		// file size + nobits sections, maybe updated by assembler 
+  .__segment_align     8   		//  
+  .__segment_startsection    ".nv.constant0._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii"  		// first section in this segment 
+  .__segment_endsection      ".text._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii"  		// last  section in this segment 
+
+// Program segment PT_LOAD, 6 
+  .__segment  "PT_LOAD", 6 
+  .__segment_offset  0x3400   		// maybe updated by assembler 
+  .__segment_vaddr   0x0   		// Seems always 0? 
+  .__segment_paddr   0x0   		// ??? 
+  .__segment_filesz  0x0   		// file size, maybe updated by assembler 
+  .__segment_memsz   0x4000   		// file size + nobits sections, maybe updated by assembler 
+  .__segment_align     8   		//  
+  .__segment_startsection    ".nv.shared._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii"  		// first section in this segment 
+  .__segment_endsection      ".nv.shared._Z5SgemmILi128ELi8ELi128ELi8ELi8ELb0EEvPfS0_S0_iii"  		// last  section in this segment 
+
+
+  //-------------------------------------------------
+  //---------------- END of segments ----------------
+  //-------------------------------------------------
+
+
