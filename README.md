@@ -1,4 +1,4 @@
-# How to optimize code in GPU
+# How to optimize in GPU
 This is a series of GPU optimization topics. Here we will introduce  how to optimize the program on the GPU in detail. The reduce optimization has been completed. The optimization of GEMM has completed the CUDA C code. The assembler is currently being used to tune the program, and the code will be issued later.
 
 # reduce
