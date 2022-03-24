@@ -18,19 +18,17 @@ __device__ __forceinline__ float warpReduceSum(float sum) {
     return sum;
 }
 
-template <unsigned int blockSize>
+template <unsigned int blockSize, int NUM_PER_THREAD>
 __global__ void reduce7(float *d_in,float *d_out, unsigned int n){
     float sum = 0;
 
     // each thread loads one element from global to shared mem
     unsigned int tid = threadIdx.x;
-    unsigned int i = blockIdx.x * (blockSize * 2) + threadIdx.x;
-    unsigned int gridSize = blockSize * 2 * gridDim.x;
+    unsigned int i = blockIdx.x * (blockSize * NUM_PER_THREAD) + threadIdx.x;
 
-    while (i < n)
-    {
-        sum += d_in[i] + d_in[i + blockSize];
-        i += gridSize;
+    #pragma unroll
+    for(int iter=0; iter<NUM_PER_THREAD; iter++){
+        sum += d_in[i+iter*blockSize];
     }
     
     // Shared mem for partial sums (one per warp in the block)
@@ -65,15 +63,16 @@ int main(){
     float *d_a;
     cudaMalloc((void **)&d_a,N*sizeof(float));
 
-    int block_num = 1024;
-    int NUM_PER_BLOCK = N / block_num;
+    const int block_num = 1024;
+    const int NUM_PER_BLOCK = N / block_num;
+    const int NUM_PER_THREAD = NUM_PER_BLOCK/THREAD_PER_BLOCK;
     float *out=(float *)malloc(block_num*sizeof(float));
     float *d_out;
     cudaMalloc((void **)&d_out,block_num*sizeof(float));
     float *res=(float *)malloc(block_num*sizeof(float));
 
     for(int i=0;i<N;i++){
-        a[i]=1;
+        a[i]=i%456;
     }
 
     for(int i=0;i<block_num;i++){
@@ -90,7 +89,11 @@ int main(){
 
     dim3 Grid( block_num, 1);
     dim3 Block( THREAD_PER_BLOCK, 1);
-    reduce7<THREAD_PER_BLOCK><<<Grid,Block>>>(d_a, d_out, N);
+
+    int iter = 2000;
+    for(int i=0; i<iter; i++){
+        reduce7<THREAD_PER_BLOCK, NUM_PER_THREAD><<<Grid,Block>>>(d_a, d_out, N);
+    }
 
     cudaMemcpy(out,d_out,block_num*sizeof(float),cudaMemcpyDeviceToHost);
 
