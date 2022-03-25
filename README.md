@@ -3,7 +3,7 @@ This is a series of GPU optimization topics. Here we will introduce  how to opti
 
 If you have any questions, you can directly contact: xiandong_liu@foxmail.com
 
-# elementwise
+## 1. elementwise
 For elementwise kernel, the optimization techniques that can be used are mainly vectorized memory access. I compared the three memory access methods of float, float2, and float4. The performance is as follows:
 
 | Type  |  Bandwiths | Ratio  |
@@ -13,11 +13,11 @@ For elementwise kernel, the optimization techniques that can be used are mainly 
 | float4  | 844  | 93.8%  |
 
 
-# reduce
+## 2. reduce
 Seven optimization methods were used to optimize reduce operator, and the performance of different optimization methods was tested on V100. The bandwidth of **858GB/s** is obtained, and the bandwidth utilization rate is: **858/900=95.3%**. The figure below shows the performance of the 7 optimization techniques.
 ![](https://github.com/Liu-xiandong/How_to_optimize_in_GPU/blob/master/figure/reduce.png?raw=true)
 
-# sgemv
+## 3. sgemv
 The core of sgemv kernel optimization lies in the design of blocks and threads, and it is necessary to avoid the situation of thread idle as much as possible.
 
 There are different optimization techniques for different data shapes. I designed 3 different optimization methods for 3 different situations, namely: n=32, n<32, and n>32. The corresponding performance is as follows:
@@ -28,8 +28,7 @@ There are different optimization techniques for different data shapes. I designe
 | v1  | 16384  |  128 | 14284  | 15848  |  110.9% |
 | v2  | 16384  | 16  | 6903  | 7576  |  109.7% |
 
-
-# sgemm
+## 4. sgemm
 The optimization of sgemm is divided into two levels, namely CUDA
 C-level optimization and optimization of SASS code.
 
