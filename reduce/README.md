@@ -449,7 +449,7 @@ __global__ void reduce7(float *d_in,float *d_out, unsigned int n){
     unsigned int gridSize = blockSize * 2 * gridDim.x;
 
     while(i<n){
-        sdata[tid] +=d_in[i]+d_in[i+blockSize];
+        sum +=  d_in[i]+d_in[i+blockSize];
         i+=gridSize;
     }
 
