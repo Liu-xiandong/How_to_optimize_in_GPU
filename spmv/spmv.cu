@@ -41,7 +41,7 @@ void add(int a, int b, float c,
     e[idx] = b, w[idx] = c, ne[idx] = h[a], h[a] = idx++;
 }
 
-void readVerEdges(int &n, int &t, int &m, std::string &file)
+void readVerEdges(int &is_weighted, int &n, int &t, int &m, std::string &file)
 {
     std::ifstream input;
     input.open("matrix/" + file + ".mtx");
@@ -51,10 +51,29 @@ void readVerEdges(int &n, int &t, int &m, std::string &file)
 
     input >> n >> t >> m;
 
+    std::string str;
+    input.ignore();
+    getline(input, str);
+    int cnt =0;
+    for(auto c:str){
+        if(c==' '){
+            cnt++;
+        }
+    }
+    if(cnt == 1){
+        is_weighted = 0;
+    }
+    else if(cnt == 2){
+        is_weighted = 1;
+    }
+    else{
+        std::cout<<"error! you need to get right mtx input\n";
+        exit(0);
+    }
     input.close();
 }
 
-void readMtxFile(int n, int m,
+void readMtxFile(int is_weighted, int n, int m,
             int *row_offset, int *col_index, float *val,
             std::string &file)
 {
@@ -76,14 +95,30 @@ void readMtxFile(int n, int m,
     int a, b;
     double c;
     srand((int)time(0));
-    while (input >> a >> b)
-    {
-        a--;
-        b--;
-        c = a%13;
-        float tc = static_cast<float>(c);
-        add(a, b, tc, h, e, ne, w, idx);
+    if(is_weighted == 0){
+        while (input >> a >> b)
+        {
+            a--;
+            b--;
+            c = a%13;
+            float tc = static_cast<float>(c);
+            add(a, b, tc, h, e, ne, w, idx);
+        }
     }
+    else if(is_weighted == 1){
+        while (input >> a >> b >> c)
+        {
+            a--;
+            b--;
+            float tc = static_cast<float>(c);
+            add(a, b, tc, h, e, ne, w, idx);
+        }
+    }
+    else{
+        std::cout<<"error! you need to get right mtx input\n";
+        exit(0);
+    }
+    
 
     row_offset[0] = 0;
     int nnz_num = 0;
@@ -110,82 +145,6 @@ void readMtxFile(int n, int m,
     free(w);
 }
 
-// csr_spmv kernel extracted from the CUSP library v0.4.0
-// VECTORS_PER_BLOCK: 每个block负责多少行的计算
-// THREADS_PER_VECTOR: 一行需要多少个thread参与计算
-template <typename IndexType, typename ValueType, unsigned int VECTORS_PER_BLOCK, unsigned int THREADS_PER_VECTOR>
-__global__ void spmv_csr_vector_kernel(const IndexType num_rows,
-                       const IndexType * Ap,
-                       const IndexType * Aj,
-                       const ValueType * Ax,
-                       const ValueType * x,
-                       ValueType * y)
-{
-    __shared__ volatile ValueType sdata[VECTORS_PER_BLOCK * THREADS_PER_VECTOR + THREADS_PER_VECTOR / 2];  // padded to avoid reduction conditionals
-    __shared__ volatile IndexType ptrs[VECTORS_PER_BLOCK][2];
-
-    // 一个block需要多少个thread参与计算
-    const IndexType THREADS_PER_BLOCK = VECTORS_PER_BLOCK * THREADS_PER_VECTOR;
-
-    const IndexType thread_id   = THREADS_PER_BLOCK * blockIdx.x + threadIdx.x;    // global thread index
-    // thread_lane 代表是该行的第几个元素
-    const IndexType thread_lane = threadIdx.x & (THREADS_PER_VECTOR - 1);          // thread index within the vector
-    // vector_id代表当前线程处理第几行的元素
-    const IndexType vector_id   = thread_id   /  THREADS_PER_VECTOR;               // global vector index
-    // vector_lane 代表是当前block中的第几行
-    const IndexType vector_lane = threadIdx.x /  THREADS_PER_VECTOR;               // vector index within the block
-    const IndexType num_vectors = VECTORS_PER_BLOCK * gridDim.x;                   // total number of active vectors
-
-    for(IndexType row = vector_id; row < num_rows; row += num_vectors)
-    {
-        // use two threads to fetch Ap[row] and Ap[row+1]
-        // this is considerably faster than the straightforward version
-        if(thread_lane < 2)
-            ptrs[vector_lane][thread_lane] = Ap[row + thread_lane];
-
-        const IndexType row_start = ptrs[vector_lane][0];                   //same as: row_start = Ap[row];
-        const IndexType row_end   = ptrs[vector_lane][1];                   //same as: row_end   = Ap[row+1];
-
-        // initialize local sum
-        ValueType sum = 0;
-
-        if (THREADS_PER_VECTOR == 32 && row_end - row_start > 32)
-        {
-            // ensure aligned memory access to Aj and Ax
-
-            IndexType jj = row_start - (row_start & (THREADS_PER_VECTOR - 1)) + thread_lane;
-
-            // accumulate local sums
-            if(jj >= row_start && jj < row_end)
-                sum += Ax[jj] * x[ Aj[jj] ];
-
-            // accumulate local sums
-            for(jj += THREADS_PER_VECTOR; jj < row_end; jj += THREADS_PER_VECTOR)
-                sum += Ax[jj] * x[ Aj[jj] ];
-        }
-        else
-        {
-            // accumulate local sums
-            for(IndexType jj = row_start + thread_lane; jj < row_end; jj += THREADS_PER_VECTOR)
-                sum += Ax[jj] * x[ Aj[jj] ];
-        }
-
-        // store local sum in shared memory
-        sdata[threadIdx.x] = sum;
-        
-        // reduce local sums to row sum
-        if (THREADS_PER_VECTOR > 16) sdata[threadIdx.x] = sum = sum + sdata[threadIdx.x + 16];
-        if (THREADS_PER_VECTOR >  8) sdata[threadIdx.x] = sum = sum + sdata[threadIdx.x +  8];
-        if (THREADS_PER_VECTOR >  4) sdata[threadIdx.x] = sum = sum + sdata[threadIdx.x +  4];
-        if (THREADS_PER_VECTOR >  2) sdata[threadIdx.x] = sum = sum + sdata[threadIdx.x +  2];
-        if (THREADS_PER_VECTOR >  1) sdata[threadIdx.x] = sum = sum + sdata[threadIdx.x +  1];
-
-        // first thread writes the result
-        if (thread_lane == 0)
-            y[row] = sdata[threadIdx.x];
-    }
-}
-
 template <unsigned int WarpSize>
 __device__ __forceinline__ float warpReduceSum(float sum) {
     if (WarpSize >= 32)sum += __shfl_down_sync(0xffffffff, sum, 16); // 0-16, 1-17, 2-18, etc.
@@ -210,7 +169,7 @@ __global__ void My_spmv_csr_kernel(const IndexType row_num,
     const IndexType row_id   = thread_id   /  THREADS_PER_VECTOR;               // global vector index
 
     if(row_id < row_num){
-        const IndexType row_start = A_row_offset[row_id];                  
+        const IndexType row_start = A_row_offset[row_id];                  //same as: row_start = Ap[row];
         const IndexType row_end   = A_row_offset[row_id+1];
 
         // initialize local sum
@@ -270,11 +229,11 @@ int main(int argc, char **argv)
     }
 
     // read mtx file and convert to csr
-    // Now, we just support unsymmetric 0-1 matrix
+    int is_weighted = -1;
     int row_num;
     int col_num;
     int nnz_num;
-    readVerEdges(row_num, col_num, nnz_num, file);
+    readVerEdges(is_weighted, row_num, col_num, nnz_num, file);
     vector<int> row_offset(row_num + 1);
     vector<int> col_index(nnz_num);
     vector<float> value(nnz_num);
@@ -283,7 +242,7 @@ int main(int argc, char **argv)
     vector<float> y_res(row_num);
     vector<float> y_cusparse_res(row_num);
     int iter = 2000;
-    readMtxFile(row_num, nnz_num, row_offset.data(), col_index.data(), value.data(), file);
+    readMtxFile(is_weighted, row_num, nnz_num, row_offset.data(), col_index.data(), value.data(), file);
 
     // check input
     // std::cout<<" The row_offset is: "<<std::endl;
@@ -314,16 +273,52 @@ int main(int argc, char **argv)
     
     // spmv
     // 32 thread for a row
-    const int THREADS_PER_VECTOR = 32;
-    const unsigned int VECTORS_PER_BLOCK  = 128 / THREADS_PER_VECTOR;
-    const unsigned int THREADS_PER_BLOCK  = VECTORS_PER_BLOCK * THREADS_PER_VECTOR;
+    int mean_col_num = (nnz_num + (row_num - 1))/ row_num;
+    std::cout<< "The average col num is: "<< mean_col_num << std::endl;
 
-    //const unsigned int MAX_BLOCKS = MAX_THREADS / THREADS_PER_BLOCK;
-    const unsigned int MAX_BLOCKS = 16 * 1024;
-    const unsigned int NUM_BLOCKS = std::min(MAX_BLOCKS, static_cast<unsigned int>((row_num + (VECTORS_PER_BLOCK - 1)) / VECTORS_PER_BLOCK));
+    // const int THREADS_PER_VECTOR = 32;
+    // const unsigned int VECTORS_PER_BLOCK  = 256 / THREADS_PER_VECTOR;
+    // const unsigned int THREADS_PER_BLOCK  = VECTORS_PER_BLOCK * THREADS_PER_VECTOR;
+    // const unsigned int NUM_BLOCKS = static_cast<unsigned int>((row_num + (VECTORS_PER_BLOCK - 1)) / VECTORS_PER_BLOCK);
+    // My_spmv_csr_kernel<int, float, VECTORS_PER_BLOCK, THREADS_PER_VECTOR> <<<NUM_BLOCKS, THREADS_PER_BLOCK>>> 
+    //     (row_num, d_A_row_offset, d_A_col_index, d_A_value, d_x, d_y);
+    
     for(int i=0; i<iter; i++){
-        spmv_csr_vector_kernel<int, float, VECTORS_PER_BLOCK, THREADS_PER_VECTOR> <<<NUM_BLOCKS, THREADS_PER_BLOCK>>> 
-            (row_num, d_A_row_offset, d_A_col_index, d_A_value, d_x, d_y);
+        if(mean_col_num <= 2){
+            const int THREADS_PER_VECTOR = 2;
+            const unsigned int VECTORS_PER_BLOCK  = 128;
+            const unsigned int NUM_BLOCKS = static_cast<unsigned int>((row_num + (VECTORS_PER_BLOCK - 1)) / VECTORS_PER_BLOCK);
+            My_spmv_csr_kernel<int, float, VECTORS_PER_BLOCK, THREADS_PER_VECTOR> <<<NUM_BLOCKS, 256>>> 
+                (row_num, d_A_row_offset, d_A_col_index, d_A_value, d_x, d_y);
+        }
+        else if(mean_col_num > 2 && mean_col_num <= 4){
+            const int THREADS_PER_VECTOR = 4;
+            const unsigned int VECTORS_PER_BLOCK  = 64;
+            const unsigned int NUM_BLOCKS = static_cast<unsigned int>((row_num + (VECTORS_PER_BLOCK - 1)) / VECTORS_PER_BLOCK);
+            My_spmv_csr_kernel<int, float, VECTORS_PER_BLOCK, THREADS_PER_VECTOR> <<<NUM_BLOCKS, 256>>> 
+                (row_num, d_A_row_offset, d_A_col_index, d_A_value, d_x, d_y);
+        }
+        else if(mean_col_num > 4 && mean_col_num <= 8){
+            const int THREADS_PER_VECTOR = 8;
+            const unsigned int VECTORS_PER_BLOCK  = 32;
+            const unsigned int NUM_BLOCKS = static_cast<unsigned int>((row_num + (VECTORS_PER_BLOCK - 1)) / VECTORS_PER_BLOCK);
+            My_spmv_csr_kernel<int, float, VECTORS_PER_BLOCK, THREADS_PER_VECTOR> <<<NUM_BLOCKS, 256>>> 
+                (row_num, d_A_row_offset, d_A_col_index, d_A_value, d_x, d_y);
+        }
+        else if(mean_col_num > 8 && mean_col_num <= 16){
+            const int THREADS_PER_VECTOR = 16;
+            const unsigned int VECTORS_PER_BLOCK  = 16;
+            const unsigned int NUM_BLOCKS = static_cast<unsigned int>((row_num + (VECTORS_PER_BLOCK - 1)) / VECTORS_PER_BLOCK);
+            My_spmv_csr_kernel<int, float, VECTORS_PER_BLOCK, THREADS_PER_VECTOR> <<<NUM_BLOCKS, 256>>> 
+                (row_num, d_A_row_offset, d_A_col_index, d_A_value, d_x, d_y);
+        }
+        else if(mean_col_num > 16){
+            const int THREADS_PER_VECTOR = 32;
+            const unsigned int VECTORS_PER_BLOCK  = 8;
+            const unsigned int NUM_BLOCKS = static_cast<unsigned int>((row_num + (VECTORS_PER_BLOCK - 1)) / VECTORS_PER_BLOCK);
+            My_spmv_csr_kernel<int, float, VECTORS_PER_BLOCK, THREADS_PER_VECTOR> <<<NUM_BLOCKS, 256>>> 
+                (row_num, d_A_row_offset, d_A_col_index, d_A_value, d_x, d_y);
+        }
     }
     checkCudaErrors(cudaMemcpy(y.data(), d_y, row_num*sizeof(float), cudaMemcpyDeviceToHost));
 
@@ -374,8 +369,9 @@ int main(int argc, char **argv)
 
     bool check_result = true;
     for(int i=0; i<row_num; i++){
-        if(fabs(y[i]-y_cusparse_res[i])>1e-6){
+        if(fabs(y[i]-y_cusparse_res[i])>1e-3){
             std::cout<<"The result is error!"<<std::endl;
+            printf("The row is: %d the y is:%f and the cusparse_y is:%f\n", i, y[i], y_cusparse_res[i]);
             check_result = false;
             break;
         }
