@@ -135,7 +135,7 @@ __global__ void Sgemm(
             }
             #pragma unroll
             for ( int i = 0 ; i < BLOCK_SIZE_K; i += B_TILE_ROW_STRIDE) {
-                int ldg_index = i / A_TILE_ROW_STRIDE * 4;
+                int ldg_index = i / B_TILE_ROW_STRIDE * 4;
                 FETCH_FLOAT4(ldg_b_reg[ldg_index]) = FETCH_FLOAT4(B[OFFSET(
                     tile_idx + B_TILE_ROW_START + i, // row
                     B_TILE_COL, // col
@@ -180,7 +180,7 @@ __global__ void Sgemm(
             // load B from global memory to shared memory
             #pragma unroll
             for ( int i = 0 ; i < BLOCK_SIZE_K; i += B_TILE_ROW_STRIDE) {
-                int ldg_index = i / A_TILE_ROW_STRIDE * 4;
+                int ldg_index = i / B_TILE_ROW_STRIDE * 4;
                 FETCH_FLOAT4(Bs[write_stage_idx][B_TILE_ROW_START + i][B_TILE_COL]) = FETCH_FLOAT4(ldg_b_reg[ldg_index]);
             }
             // use double buffer, only need one sync
