@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "assert.h" 
 
 // CUDA runtime
 #include <cuda_runtime.h>
@@ -95,8 +96,9 @@ __global__ void Sgemm(
     //load index of the tile
     const int warp_id = tid / 32;
     const int lane_id = tid % 32;
-    const int tile_index = (warp_id%4)*16 + (lane_id/16)*8 + (lane_id%2)*4;
-
+    const int a_tile_index =  warp_id/2*16 + lane_id/8*4; //warp_id * 8 + (lane_id / 16)*4; // (warp_id/4)*32 + ((lane_id%16)/2)*4;
+    const int b_tile_index =  warp_id%2*32 + lane_id%8*4; //(lane_id % 16) * 4; // (warp_id%4)*16 + (lane_id/16)*8 + (lane_id%2)*4;
+    
     //transfer first tile from global mem to shared mem
     // load A from global memory to shared memory
     #pragma unroll
@@ -120,17 +122,19 @@ __global__ void Sgemm(
                 N )]);
     }
     __syncthreads();
-
+    
     // load A from shared memory to register
-    FETCH_FLOAT4(frag_a[0][0]) = FETCH_FLOAT4(As[0][0][tile_index]);
-    FETCH_FLOAT4(frag_a[0][4]) = FETCH_FLOAT4(As[0][0][tile_index + 64]);
+    FETCH_FLOAT4(frag_a[0][0]) = FETCH_FLOAT4(As[0][0][a_tile_index]);
+    FETCH_FLOAT4(frag_a[0][4]) = FETCH_FLOAT4(As[0][0][a_tile_index + 64]);
+    
     // load B from shared memory to register
-    FETCH_FLOAT4(frag_b[0][0]) = FETCH_FLOAT4(Bs[0][0][tile_index]);
-    FETCH_FLOAT4(frag_b[0][4]) = FETCH_FLOAT4(Bs[0][0][tile_index + 64]);
-
+    FETCH_FLOAT4(frag_b[0][0]) = FETCH_FLOAT4(Bs[0][0][b_tile_index]);
+    FETCH_FLOAT4(frag_b[0][4]) = FETCH_FLOAT4(Bs[0][0][b_tile_index + 64]);
+    
     int write_stage_idx = 1;
     int tile_idx = 0;
     do{
+        // next tile index
         tile_idx += BLOCK_SIZE_K;
         // load next tile from global mem
         if(tile_idx< K){
@@ -144,7 +148,7 @@ __global__ void Sgemm(
             }
             #pragma unroll
             for ( int i = 0 ; i < BLOCK_SIZE_K; i += B_TILE_ROW_STRIDE) {
-                int ldg_index = i / A_TILE_ROW_STRIDE * 4;
+                int ldg_index = i / B_TILE_ROW_STRIDE * 4;
                 FETCH_FLOAT4(ldg_b_reg[ldg_index]) = FETCH_FLOAT4(B[OFFSET(
                     tile_idx + B_TILE_ROW_START + i, // row
                     B_TILE_COL, // col
@@ -153,18 +157,16 @@ __global__ void Sgemm(
         }
 
         int load_stage_idx = write_stage_idx ^ 1;
-        int next_stage_flag = load_stage_idx;
 
         #pragma unroll
-        for(int j=0; j<BLOCK_SIZE_K; ++j){
+        for(int j=0; j<BLOCK_SIZE_K - 1; ++j){
             // load next tile from shared mem to register 
-            next_stage_flag = (j==BLOCK_SIZE_K-1)?load_stage_idx:write_stage_idx;
             // load A from shared memory to register
-            FETCH_FLOAT4(frag_a[(j+1)%2][0]) = FETCH_FLOAT4(As[next_stage_flag][(j+1)%BLOCK_SIZE_K][tile_index]);
-            FETCH_FLOAT4(frag_a[(j+1)%2][4]) = FETCH_FLOAT4(As[next_stage_flag][(j+1)%BLOCK_SIZE_K][tile_index + 64]);
+            FETCH_FLOAT4(frag_a[(j+1)%2][0]) = FETCH_FLOAT4(As[load_stage_idx][(j+1)][a_tile_index]);
+            FETCH_FLOAT4(frag_a[(j+1)%2][4]) = FETCH_FLOAT4(As[load_stage_idx][(j+1)][a_tile_index + 64]);
             // load B from shared memory to register
-            FETCH_FLOAT4(frag_b[(j+1)%2][0]) = FETCH_FLOAT4(Bs[next_stage_flag][(j+1)%BLOCK_SIZE_K][tile_index]);
-            FETCH_FLOAT4(frag_b[(j+1)%2][4]) = FETCH_FLOAT4(Bs[next_stage_flag][(j+1)%BLOCK_SIZE_K][tile_index + 64]);
+            FETCH_FLOAT4(frag_b[(j+1)%2][0]) = FETCH_FLOAT4(Bs[load_stage_idx][(j+1)][b_tile_index]);
+            FETCH_FLOAT4(frag_b[(j+1)%2][4]) = FETCH_FLOAT4(Bs[load_stage_idx][(j+1)][b_tile_index + 64]);
             // compute C THREAD_SIZE_X x THREAD_SIZE_Y
             #pragma unroll
             for (int thread_y = 0; thread_y < THREAD_SIZE_Y; ++thread_y) {
@@ -176,6 +178,7 @@ __global__ void Sgemm(
         }
 
         if(tile_idx < K){
+            // load A from global memory to shared memory
             #pragma unroll
             for ( int i = 0 ; i < BLOCK_SIZE_M ; i += A_TILE_ROW_STRIDE) {
                 int ldg_index = i / A_TILE_ROW_STRIDE * 4;
@@ -187,7 +190,7 @@ __global__ void Sgemm(
             // load B from global memory to shared memory
             #pragma unroll
             for ( int i = 0 ; i < BLOCK_SIZE_K; i += B_TILE_ROW_STRIDE) {
-                int ldg_index = i / A_TILE_ROW_STRIDE * 4;
+                int ldg_index = i / B_TILE_ROW_STRIDE * 4;
                 FETCH_FLOAT4(Bs[write_stage_idx][B_TILE_ROW_START + i][B_TILE_COL]) = FETCH_FLOAT4(ldg_b_reg[ldg_index]);
             }
             // use double buffer, only need one sync
@@ -195,34 +198,53 @@ __global__ void Sgemm(
             // switch
             write_stage_idx ^= 1;
         }
+
+        // load first tile from shared mem to register of next iter
+        // load A from shared memory to register
+        FETCH_FLOAT4(frag_a[0][0]) = FETCH_FLOAT4(As[load_stage_idx^1][0][a_tile_index]);
+        FETCH_FLOAT4(frag_a[0][4]) = FETCH_FLOAT4(As[load_stage_idx^1][0][a_tile_index + 64]);
+        // load B from shared memory to register
+        FETCH_FLOAT4(frag_b[0][0]) = FETCH_FLOAT4(Bs[load_stage_idx^1][0][b_tile_index]);
+        FETCH_FLOAT4(frag_b[0][4]) = FETCH_FLOAT4(Bs[load_stage_idx^1][0][b_tile_index + 64]);
+        // compute C THREAD_SIZE_X x THREAD_SIZE_Y
+        #pragma unroll
+        for (int thread_y = 0; thread_y < THREAD_SIZE_Y; ++thread_y) {
+            #pragma unroll
+            for (int thread_x = 0; thread_x < THREAD_SIZE_X; ++thread_x) {
+                accum[thread_y][thread_x] += frag_a[1][thread_y] * frag_b[1][thread_x];
+            }
+        }
     }while(tile_idx< K);
+    
+    const int c_block_row = a_tile_index;
+    const int c_block_col = b_tile_index;
 
     //store C00 block
     for(int i=0; i<4; i++){
       FETCH_FLOAT4(C[OFFSET(
-        BLOCK_SIZE_M * by + ty * 4 + i,
-        BLOCK_SIZE_N * bx + tx * 4,
+        BLOCK_SIZE_M * by + c_block_row + i,
+        BLOCK_SIZE_N * bx + c_block_col,
         N)]) = FETCH_FLOAT4(accum[i][0]);
     }
     //store C01 block
     for(int i=0; i<4; i++){
       FETCH_FLOAT4(C[OFFSET(
-        BLOCK_SIZE_M * by + ty * 4 + i,
-        BLOCK_SIZE_N * bx + tx * 4 + 64,
+        BLOCK_SIZE_M * by + c_block_row + i,
+        BLOCK_SIZE_N * bx + c_block_col + 64,
         N)]) = FETCH_FLOAT4(accum[i][4]);
     }
     //store C10 block
     for(int i=0; i<4; i++){
       FETCH_FLOAT4(C[OFFSET(
-        BLOCK_SIZE_M * by + ty * 4 + i + 64,
-        BLOCK_SIZE_N * bx + tx * 4,
+        BLOCK_SIZE_M * by + c_block_row + 64 + i,
+        BLOCK_SIZE_N * bx + c_block_col,
         N)]) = FETCH_FLOAT4(accum[i+4][0]);
     }
     //store C11 block
     for(int i=0; i<4; i++){
       FETCH_FLOAT4(C[OFFSET(
-        BLOCK_SIZE_M * by + ty * 4 + i+ 64,
-        BLOCK_SIZE_N * bx + tx * 4 + 64,
+        BLOCK_SIZE_M * by + c_block_row + 64 + i,
+        BLOCK_SIZE_N * bx + c_block_col + 64,
         N)]) = FETCH_FLOAT4(accum[i+4][4]);
     }
 }
@@ -235,6 +257,10 @@ int main(int argc, char** argv) {
     size_t M = atoi(argv[1]);
     size_t K = atoi(argv[2]);
     size_t N = atoi(argv[3]);
+
+    assert( M%8 == 0); 
+    assert( N%8 == 0); 
+    assert( K%8 == 0); 
 
     size_t bytes_A = sizeof(float) * M * K;
     size_t bytes_B = sizeof(float) * K * N;
@@ -262,27 +288,15 @@ int main(int argc, char** argv) {
     const int THREAD_SIZE_X = 8;
     const int THREAD_SIZE_Y = 8;
     const bool ENABLE_DOUBLE_BUFFER = false;
-    int k_block = K / BLOCK_SIZE_K;
-    int stride = 2;
 
     // 生成A的数据
     for( int i = 0; i < M * K; i++ ) {
-        int row = (i / K);
-        int col = (i % K);
-        int row_block = row / BLOCK_SIZE_M;
-        int col_block = col / BLOCK_SIZE_K;
-        if ((row_block * k_block + col_block) % stride == 0) h_A[i] = 1;
-        else {
-            h_A[i] = 0;
-        }
+        h_A[i] = i / 13;
     }
 
     // 生成B的数据
     for( int i = 0; i < K * N; i++ ) {
-        if ( i >= K * N / 2) h_B[i] = 2;
-        else {
-            h_B[i] = 0;
-        }
+        h_B[i] = i % 13;
     }
 
     checkCudaErrors(cudaMemcpy( d_A, h_A, bytes_A, cudaMemcpyHostToDevice));
@@ -356,8 +370,8 @@ int main(int argc, char** argv) {
         double abs_val = fabs(h_C[i]);
         double rel_err = abs_err / abs_val / dot_length;
         if (rel_err > eps) {
-            printf("Error! Matrix[%05d]=%.8f, ref=%.8f error term is > %E\n",
-                    i, h_C[i], h_C1[col * M + row], eps);
+            printf("Error! Matrix[%d][%d]=%.8f, ref=%.8f error term is > %E\n",
+                    row, col, h_C[i], h_C1[col * M + row], eps);
             correct = false;
             break;
         }
