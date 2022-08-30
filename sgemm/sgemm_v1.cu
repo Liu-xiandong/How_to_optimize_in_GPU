@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "assert.h" 
 
 // CUDA runtime
 #include <cuda_runtime.h>
@@ -232,6 +233,10 @@ int main(int argc, char** argv) {
     size_t K = atoi(argv[2]);
     size_t N = atoi(argv[3]);
 
+    assert( M%8 == 0); 
+    assert( N%8 == 0); 
+    assert( K%8 == 0); 
+
     size_t bytes_A = sizeof(float) * M * K;
     size_t bytes_B = sizeof(float) * K * N;
     size_t bytes_C = sizeof(float) * M * N;
@@ -257,27 +262,15 @@ int main(int argc, char** argv) {
     const int THREAD_SIZE_X = 8;
     const int THREAD_SIZE_Y = 8;
     const bool ENABLE_DOUBLE_BUFFER = false;
-    int k_block = K / BLOCK_SIZE_K;
-    int stride = 2;
 
-    // 生成A的数据
-    for( int i = 0; i < M * K; i++ ) {
-        int row = (i / K);
-        int col = (i % K);
-        int row_block = row / BLOCK_SIZE_M;
-        int col_block = col / BLOCK_SIZE_K;
-        if ((row_block * k_block + col_block) % stride == 0) h_A[i] = 1;
-        else {
-            h_A[i] = 0;
-        }
+    // generate A
+    for( int i = 0; i < M * K; i++ ){
+        h_A[i] = i / 13;
     }
 
-    // 生成B的数据
+    // generate B
     for( int i = 0; i < K * N; i++ ) {
-        if ( i >= K * N / 2) h_B[i] = 2;
-        else {
-            h_B[i] = 0;
-        }
+        h_B[i] = i % 13;
     }
 
     checkCudaErrors(cudaMemcpy( d_A, h_A, bytes_A, cudaMemcpyHostToDevice));
@@ -338,7 +331,6 @@ int main(int argc, char** argv) {
         flopsPerMatrixMul);
 
     cublasDestroy(blas_handle); 
-
     
     double eps = 1.e-6;  // machine zero
     bool correct = true;
