@@ -35,7 +35,7 @@ C-level optimization and optimization of SASS code.
 Regarding CUDA C-level optimizations, the final code is sgemm_v3. On a large matrix of 4096 (M=N=K), our sgemm can achieve **96.8%** performance of cublas, with a peak floating point efficiency of 93.6%, basically reaching the limit of CUDA C code optimization. The figure below shows the performance of sgemm_v3.
 ![](https://github.com/Liu-xiandong/How_to_optimize_in_GPU/blob/master/figure/sgemm.png?raw=true)
 
-Regarding the optimization of SASS code, CuAssembler is used for tuning. There are two main optimization techniques in this part, namely register remapping and instruction rearrangement to obtain better .reuse logo layout.
+Regarding the optimization of SASS code, CuAssembler is used for tuning. There are two main optimization techniques in this part, namely register remapping and instruction rearrangement to obtain better .reuse flag layout.
 
 ## License
 All the source codes of this repo are released under [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0).
